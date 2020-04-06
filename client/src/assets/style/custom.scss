@@ -1,0 +1,13 @@
+$almost-black: #1a1a1a;
+$racket-red: #cf0000;
+
+$nav-height: 70px;
+
+$theme-colors: (
+  "dark": $almost-black
+);
+
+$font-family-sans-serif:      "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';

@@ -79,3 +79,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.register {
+  padding-top: 30px;
+}
+</style>

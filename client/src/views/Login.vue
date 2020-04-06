@@ -67,3 +67,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.login {
+  padding-top: 30px;
+}
+</style>

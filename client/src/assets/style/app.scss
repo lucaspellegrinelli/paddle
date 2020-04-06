@@ -1,0 +1,10 @@
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'src/assets/style/custom.scss';
+
+#app {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    color: $gray-500;
+    background-color: $gray-200;
+    min-height: 100vh;
+  }
