@@ -1,5 +1,5 @@
 <template>
-    <b-navbar toggleable="lg" type="dark" variant="dark" id="navbar">
+    <b-navbar toggleable="md" type="dark" variant="dark" id="navbar">
       <b-navbar-brand href="/">
         <img src="../assets/images/navicon.svg" alt="Paddle">
         <img src="../assets/images/navicon-hover.svg" class="hover" alt="Paddle">
