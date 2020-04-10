@@ -1,13 +1,18 @@
 <template>
   <div class="home">
     <b-container>
-      <div class="row justify-content-center">
-        <div class="col-9 p-4">
-          <div class="row-3 my-3" v-for="post in posts" :key="post.id">
-            <Informe :key="post.id" :postData="post"/>
-          </div>
-        </div>
-      </div>
+      <b-container>
+        <h1 class="titulo"> Informes </h1>
+        <b-card-group deck>
+          <Informe v-for="post in ultimos_posts" :key="post.id" :post_info="post"/>
+        </b-card-group>
+        <b-button href="#" size="sm" variant="outline-dark" style="margin-top: 20px">
+          Ver todos
+        </b-button>
+      </b-container>
+      <b-container>
+        <h1 class="titulo"> Ranking </h1>
+      </b-container>
     </b-container>
   </div>
 </template>
@@ -16,6 +21,8 @@
 // @ is an alias to /src
 import Informe from '@/components/Informe.vue'
 
+const axios = require("axios");
+
 export default {
   name: 'Home',
   components: {
@@ -23,26 +30,29 @@ export default {
   },
   data() {
     return {
-      posts:[
-        { 
-          id: 1,
-          title: 'Postagem nº1',
-          date: '07/04/2020',
-          body: 'Um teste'
-        },
-        { 
-          id: 2,
-          title: 'Postagem nº2',
-          date: '08/04/2020',
-          body: 'Outro teste'
-        }
-      ]
+      ultimos_posts: []
+    }
+  },
+  created(){
+    this.get_recent_posts();
+  },
+  methods: {
+    get_recent_posts() {
+      axios.get("/api/home")
+      .then(response => {
+        this.ultimos_posts = response.data.ultimos_3_posts;
+      })
+      //.catch(function(error) {
+      //  alert(error);
+      //});
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+@import '../assets/style/app.scss';
+
 .home {
   padding-top: 30px;
 }

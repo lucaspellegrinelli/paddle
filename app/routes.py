@@ -68,6 +68,30 @@ def logout():
     logout_user()
     return response_success(None), 200
 
+@app.route("/api/home")
+def get_recent_posts():
+    ultimos_3_posts = [
+        { 
+          id: 1,
+          titulo: 'Postagem nº1',
+          data: '07/04/2020',
+          corpo: 'Um teste'
+        },
+        { 
+          id: 2,
+          titulo: 'Postagem nº2',
+          data: '08/04/2020',
+          corpo: 'Outro teste'
+        },
+        { 
+          id: 3,
+          titulo: 'Postagem nº3',
+          data: '08/04/2020',
+          corpo: 'Outro teste'
+        }
+    ]
+    return response_success(ultimos_3_posts), 200
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def catch_all(path):

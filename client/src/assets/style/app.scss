@@ -4,6 +4,14 @@
 #app {
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    background-color: $gray-200;
+    background-color: $gray-100;
     min-height: 100vh;
   }
+
+.titulo{
+  padding: 10px;
+  color: $almost-black;
+  text-align: left;
+  border-bottom: 1px solid $gray-500;
+  margin-bottom: 20px;
+}
