@@ -60,29 +60,21 @@ def logout():
     logout_user()
     return resposta_sucesso(None), 200
 
-@app.route("/api/home")
-def get_recent_posts():
-    ultimos_3_posts = [
-        { 
-          id: 1,
-          titulo: 'Postagem nº1',
-          data: '07/04/2020',
-          corpo: 'Um teste'
-        },
-        { 
-          id: 2,
-          titulo: 'Postagem nº2',
-          data: '08/04/2020',
-          corpo: 'Outro teste'
-        },
-        { 
-          id: 3,
-          titulo: 'Postagem nº3',
-          data: '08/04/2020',
-          corpo: 'Outro teste'
-        }
-    ]
-    return resposta_sucesso(ultimos_3_posts), 200
+@app.route("/api/informes")
+def get_posts_recentes():
+    limite = request.args.get('limite', '')
+    if limite is None or limite == "":
+        ultimos_3_posts = Post.query.order_by(Post.data.desc()).all()
+    else:
+        ultimos_3_posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
+    return response_success(ultimos_3_posts), 200
+
+@app.route("/api/publicar")
+def publicar_post():
+    novo_post = Post(titulo="Um post de teste", corpo="Teste")
+    db.session.add(novo_post)
+    db.session.commit()
+    return response_success(None), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

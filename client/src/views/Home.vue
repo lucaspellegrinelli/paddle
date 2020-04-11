@@ -6,8 +6,11 @@
         <b-card-group deck>
           <Informe v-for="post in ultimos_posts" :key="post.id" :post_info="post"/>
         </b-card-group>
-        <b-button href="#" size="sm" variant="outline-dark" style="margin-top: 20px">
+        <b-button href="/informes" size="sm" variant="outline-dark" style="margin-top: 20px">
           Ver todos
+        </b-button>&nbsp;
+        <b-button v-on:click="publica_post" size="sm" variant="outline-dark" style="margin-top: 20px">
+          Teste: Publicar post
         </b-button>
       </b-container>
       <b-container>
@@ -30,21 +33,35 @@ export default {
   },
   data() {
     return {
-      ultimos_posts: []
+      ultimos_posts: [],
+      esconder_texto: true
     }
   },
   created(){
-    this.get_recent_posts();
+    this.get_posts_recentes();
   },
   methods: {
-    get_recent_posts() {
-      axios.get("/api/home")
-      .then(response => {
-        this.ultimos_posts = response.data.ultimos_3_posts;
+    get_posts_recentes() {
+      axios.get("/api/informes", {
+        params: {
+          limite: 3
+        }
       })
-      //.catch(function(error) {
-      //  alert(error);
-      //});
+      .then(response => {
+        this.ultimos_posts = response.data.conteudo;
+      })
+      .catch(function(error) {
+        alert(error);
+      });
+    },
+    publica_post() {
+      axios.get("/api/publicar")
+        .then(function(response) {
+          alert(JSON.stringify(response));
+        })
+      .catch(function(error) {
+        alert(error);
+      });
     }
   }
 }

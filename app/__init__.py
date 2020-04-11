@@ -13,4 +13,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
 from app import usuario
+from app import post
 from app import rotas
+
+db.create_all()
