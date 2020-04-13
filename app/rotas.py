@@ -97,17 +97,17 @@ def logout():
 def get_posts_recentes():
     limite = request.args.get('limite', '')
     if limite is None or limite == "":
-        ultimos_3_posts = Post.query.order_by(Post.data.desc()).all()
+        posts = Post.query.order_by(Post.data.desc()).all()
     else:
-        ultimos_3_posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
-    return resposta_sucesso(ultimos_3_posts), 200
+        posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
+    return resposta_sucesso(posts), 200
 
 @app.route("/api/publicar")
 def publicar_post():
     novo_post = Post(titulo="Um post de teste", corpo="Teste")
     db.session.add(novo_post)
     db.session.commit()
-    return response_success(None), 200
+    return resposta_sucesso(None), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

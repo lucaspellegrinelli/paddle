@@ -3,16 +3,15 @@
     <b-container>
       <div class="row justify-content-center">
         <div class="col-9 p-4">
-          <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_posts" :per-page="por_pagina">
-          </b-pagination>
           <div class="row-2 my-3" v-for="post in posts_atuais" :key="post.id">
-            <Informe :key="post.id" :post_info="post" :esconder_texto="esconder_texto"/>
+            <Informe :post_info="post" :esconder_texto="esconder_texto"/>
           </div>
           <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_posts" :per-page="por_pagina">
           </b-pagination>
         </div>
       </div>
     </b-container>
+    <router-view/>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <b-card :header="post_info.data">
-    <b-card-title><a href="#" class="card-link"> {{post_info.titulo}} </a></b-card-title>
+    <b-card-title><a @click="redireciona_post" class="card-link"> {{post_info.titulo}} </a></b-card-title>
     <b-card-text> {{corpo_post}} </b-card-text>
   </b-card>
 </template>
@@ -11,16 +11,16 @@ export default {
   props: ['post_info', 'esconder_texto'],
   computed: {
      corpo_post() {
-      if (this.post_info.corpo.length > 170)
+      if (this.esconder_texto && this.post_info.corpo.length > 170)
         return this.post_info.corpo.slice(0,170)+"...";
       return this.post_info.corpo;
     }
-  }
-  /*methods: {
+  },
+  methods: {
     redireciona_post(){
-      this.$router.push({ path: "informes", params: { id: this.post_info.id }});
+      this.$router.push({ name: "Informe", params: { id: this.post_info.id, post: this.post_info }});
     }
-  }*/
+  }
 }
 </script>
 

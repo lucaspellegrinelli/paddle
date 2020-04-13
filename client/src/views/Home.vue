@@ -4,12 +4,12 @@
       <b-container>
         <h1 class="titulo"> Informes </h1>
         <b-card-group deck>
-          <Informe v-for="post in ultimos_posts" :key="post.id" :post_info="post"/>
+          <Informe v-for="post in ultimos_posts" :key="post.id" :post_info="post" :esconder_texto="esconder_texto"/>
         </b-card-group>
         <b-button href="/informes" size="sm" variant="outline-dark" style="margin-top: 20px">
           Ver todos
         </b-button>&nbsp;
-        <b-button v-on:click="publica_post" size="sm" variant="outline-dark" style="margin-top: 20px">
+        <b-button @click="publica_post" size="sm" variant="outline-dark" style="margin-top: 20px">
           Teste: Publicar post
         </b-button>
       </b-container>

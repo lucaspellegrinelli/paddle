@@ -18,7 +18,13 @@ const routes = [
   {
     path: '/informes',
     name: 'Informes',
-    component: () => import('../views/Informes.vue')
+    component: () => import('../views/Informes.vue'),
+  },
+  {
+    path: '/informes/:id',
+    name: 'Informe',
+    component: () => import('../views/InformeItem.vue'),
+    props: true
   },
   {
     path: '/campeonatos',
