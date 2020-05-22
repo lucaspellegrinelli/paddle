@@ -1,17 +1,20 @@
 <template>
-  <div class="informes">
+  <div class="informes-lista">
     <b-container>
       <div class="row justify-content-center">
         <div class="col-9 p-4">
+          <h1 class="titulo"> Informes </h1>
+          <b-button :to="'informes/novo'" size="sm" variant="dark" v-if="this.$root.logado && this.$root.admin">
+            <b-icon icon="plus"></b-icon> Novo informe
+          </b-button>
           <div class="row-2 my-3" v-for="post in posts_atuais" :key="post.id">
             <Informe :post_info="post" :esconder_texto="esconder_texto"/>
           </div>
-          <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_posts" :per-page="por_pagina">
-          </b-pagination>
+          <!-- TODO: voltar para o topo ao mudar de pág --> 
+          <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_posts" :per-page="por_pagina"/>
         </div>
       </div>
     </b-container>
-    <router-view/>
   </div>
 </template>
 
@@ -48,12 +51,13 @@ export default {
   },
   methods: {
     get_posts() {
+      //TODO? Pegar somente posts da pag atual em uma requisição e fazer uma req por pag?
       axios.get("/api/informes")
-      .then(response => {
-        this.posts = response.data.conteudo;
+      .then(resposta => {
+        this.posts = resposta.data.conteudo;
       })
-      .catch(function(error) {
-        alert(error);
+      .catch(function(erro) {
+        alert(erro);
       });
     }
   }

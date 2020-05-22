@@ -18,12 +18,24 @@ const routes = [
   {
     path: '/informes',
     name: 'Informes',
-    component: () => import('../views/Informes.vue'),
+    component: () => import('../views/InformesLista.vue')
+  },
+  //Tem que vir antes da rota 'Informe' para /novo nao ser entendido como uma id
+  {
+    path: '/informes/novo',
+    name: 'InformeNovo',
+    component: () => import('../views/InformeNovo.vue')
   },
   {
     path: '/informes/:id',
     name: 'Informe',
     component: () => import('../views/InformeItem.vue'),
+    props: true
+  },
+  {
+    path: '/informes/editar/:id',
+    name: 'InformeEditar',
+    component: () => import('../views/InformeEditar.vue'),
     props: true
   },
   {

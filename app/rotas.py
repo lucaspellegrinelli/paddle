@@ -107,12 +107,19 @@ def dados_sessao():
 
 @app.route("/api/informes")
 def get_posts_recentes():
-    limite = request.args.get('limite', '')
-    if limite is None or limite == "":
+    limite = request.args.get('limite', default = None)
+    if limite is None:
         posts = Post.query.order_by(Post.data.desc()).all()
     else:
         posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
     return resposta_sucesso(posts), 200
+
+@app.route("/api/informes/<id>")
+def get_post(id):
+    post = Post.query.filter_by(id=id).first()
+    if post is None:
+        return resposta_erro("Post não encontrado"), 404
+    return resposta_sucesso(post), 200
 
 @app.route("/api/publicar")
 def publicar_post():
