@@ -121,9 +121,11 @@ def get_post(id):
         return resposta_erro("Post não encontrado"), 404
     return resposta_sucesso(post), 200
 
-@app.route("/api/publicar")
+@app.route("/api/publicar", methods=["POST"])
 def publicar_post():
-    novo_post = Post(titulo="Um post de teste", corpo="Teste")
+    titulo = request.get_json().get('titulo')
+    corpo = request.get_json().get('corpo')
+    novo_post = Post(titulo=titulo, corpo=corpo)
     db.session.add(novo_post)
     db.session.commit()
     return resposta_sucesso(None), 200
