@@ -5,7 +5,7 @@
       size="sm" variant="light" v-if="this.$root.logado && this.$root.admin">
         <b-icon icon="pencil"></b-icon> Editar
       </b-button>&nbsp;
-      <b-button size="sm" variant="light" v-if="this.$root.logado && this.$root.admin">
+      <b-button @click="showMsgBoxDelete" size="sm" variant="light" v-if="this.$root.logado && this.$root.admin">
         <b-icon icon="trash"></b-icon> Excluir
       </b-button>
     </div>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+const axios = require("axios");
+
 export default {
   name: 'Informe',
   props: ['post_info', 'esconder_texto'],
@@ -32,6 +34,32 @@ export default {
       if (this.esconder_texto && this.post_info.corpo.length > 170)
         return this.post_info.corpo.slice(0,170)+"...";
       return this.post_info.corpo;
+    }
+  },
+  methods: {
+    showMsgBoxDelete() {
+      if (!this.$root.admin) {
+        this.$router.push("login");
+        return;
+      }
+      this.$bvModal.msgBoxConfirm('Deseja deletar o seguinte informe? \n' + this.post_info.titulo)
+      .then(value => {
+        if(value==true){
+          axios
+            .post(`/api/deletar/${this.post_info.id}`)
+            .then(resposta => {
+              if(resposta.status == 200){
+                this.$bvModal.msgBoxOk("Informe deletado com sucesso")
+                .then(_ => {
+                  this.$router.go();
+                });
+              }
+            })
+            .catch(erro => {
+              alert(erro);
+            });
+        }    
+      });
     }
   }
 }

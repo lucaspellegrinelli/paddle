@@ -53,8 +53,10 @@ export default {
                         .post("/api/publicar", this.form)
                         .then(resposta => {
                             if(resposta.status == 200){
-                                alert("Informe publicado com sucesso");
-                                this.$router.go(-1);
+                                this.$bvModal.msgBoxOk("Informe publicado com sucesso")
+                                .then(_ => {
+                                    this.$router.go(-1);
+                                });
                             }
                         })
                         .catch(erro => {

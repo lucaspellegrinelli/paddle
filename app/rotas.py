@@ -124,6 +124,8 @@ def get_post(id):
     return resposta_sucesso(post), 200
 
 @app.route("/api/publicar", methods=["POST"])
+@login_required
+@requer_admin
 def publicar_post():
     titulo = request.get_json().get('titulo')
     corpo = request.get_json().get('corpo')
@@ -131,6 +133,17 @@ def publicar_post():
     db.session.add(novo_post)
     db.session.commit()
     return resposta_sucesso(None), 200
+
+@app.route("/api/deletar/<id>", methods=["POST"])
+@login_required
+@requer_admin
+def deletar_post(id):
+    post = Post.query.filter_by(id=id).first()
+    if post is None:
+        return resposta_erro("Post não encontrado"), 404    
+    db.session.delete(post)
+    db.session.commit()
+    return resposta_sucesso(None), 200    
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

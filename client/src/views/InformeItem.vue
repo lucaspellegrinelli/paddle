@@ -43,6 +43,9 @@ export default {
           //TODO: Exibir view de NotFound sem redirecionar
           this.$router.replace({ name: 'NotFound' });
         }
+        else{
+          alert(erro);
+        }
       });
     }
   }
