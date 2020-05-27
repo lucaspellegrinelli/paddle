@@ -107,7 +107,7 @@ def dados_sessao():
         "admin": admin
     }), 200
 
-@app.route("/api/informes")
+@app.route("/api/informes", methods=["GET"])
 def get_posts_recentes():
     limite = request.args.get('limite', default = None)
     if limite is None:
@@ -116,14 +116,7 @@ def get_posts_recentes():
         posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
     return resposta_sucesso(posts), 200
 
-@app.route("/api/informes/<id>")
-def get_post(id):
-    post = Post.query.filter_by(id=id).first()
-    if post is None:
-        return resposta_erro("Post não encontrado"), 404
-    return resposta_sucesso(post), 200
-
-@app.route("/api/publicar", methods=["POST"])
+@app.route("/api/informes", methods=["POST"])
 @login_required
 @requer_admin
 def publicar_post():
@@ -134,7 +127,14 @@ def publicar_post():
     db.session.commit()
     return resposta_sucesso(None), 200
 
-@app.route("/api/deletar/<id>", methods=["POST"])
+@app.route("/api/informes/<id>", methods=["GET"])
+def get_post(id):
+    post = Post.query.filter_by(id=id).first()
+    if post is None:
+        return resposta_erro("Post não encontrado"), 404
+    return resposta_sucesso(post), 200
+
+@app.route("/api/informes/<id>", methods=["DELETE"])
 @login_required
 @requer_admin
 def deletar_post(id):
@@ -144,6 +144,20 @@ def deletar_post(id):
     db.session.delete(post)
     db.session.commit()
     return resposta_sucesso(None), 200    
+
+@app.route("/api/informes/<id>", methods=["PATCH"])
+@login_required
+@requer_admin
+def editar_post(id):
+    post = Post.query.filter_by(id=id).first()
+    if post is None:
+        return resposta_erro("Post não encontrado"), 404
+    titulo = request.get_json().get('titulo')
+    corpo = request.get_json().get('corpo')    
+    post.titulo = titulo
+    post.corpo = corpo
+    db.session.commit()
+    return resposta_sucesso(None), 200 
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

@@ -1,7 +1,7 @@
 <template>
   <b-card :header="post_info.data">
     <div class="text-right my-2">
-      <b-button :to="{ name: 'InformeEditar', params: { id: this.post_info.id}}" 
+      <b-button :to="{ name: 'InformeEditar', params: { id: this.post_info.id, post: this.post_info }}" 
       size="sm" variant="light" v-if="this.$root.logado && this.$root.admin">
         <b-icon icon="pencil"></b-icon> Editar
       </b-button>&nbsp;
@@ -46,7 +46,7 @@ export default {
       .then(value => {
         if(value==true){
           axios
-            .post(`/api/deletar/${this.post_info.id}`)
+            .delete(`/api/informes/${this.post_info.id}`)
             .then(resposta => {
               if(resposta.status == 200){
                 this.$bvModal.msgBoxOk("Informe deletado com sucesso")
