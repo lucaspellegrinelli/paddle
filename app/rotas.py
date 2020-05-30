@@ -8,6 +8,7 @@ from app.post import Post
 from app import db
 import datetime
 import functools
+from sqlalchemy.sql import text
 
 def resposta_sucesso(conteudo):
     return jsonify({ "status": "sucesso", "conteudo": conteudo })
@@ -130,7 +131,7 @@ def publicar_post():
 @app.route("/api/informes/<id>", methods=["GET"])
 def get_post(id):
     post = Post.query.filter_by(id=id).first()
-    if post is None:
+    if not post:
         return resposta_erro("Post não encontrado"), 404
     return resposta_sucesso(post), 200
 
@@ -139,7 +140,7 @@ def get_post(id):
 @requer_admin
 def deletar_post(id):
     post = Post.query.filter_by(id=id).first()
-    if post is None:
+    if not post:
         return resposta_erro("Post não encontrado"), 404    
     db.session.delete(post)
     db.session.commit()
@@ -150,7 +151,7 @@ def deletar_post(id):
 @requer_admin
 def editar_post(id):
     post = Post.query.filter_by(id=id).first()
-    if post is None:
+    if not post:
         return resposta_erro("Post não encontrado"), 404
     titulo = request.get_json().get('titulo')
     corpo = request.get_json().get('corpo')    
@@ -158,6 +159,25 @@ def editar_post(id):
     post.corpo = corpo
     db.session.commit()
     return resposta_sucesso(None), 200 
+
+@app.route("/api/atletas", methods=["GET"])
+def get_atletas():
+    atletas = []
+    filtros = dict()
+
+    for filtro in request.args:
+        chave = text(filtro)
+        valor = request.args.get(filtro)
+        if(valor is not None and valor != "" and filtro != "nome"):
+            filtros[chave] = valor
+
+    nome = request.args.get("nome")
+    if (nome is not None and nome != ""):
+        atletas = Atleta.query.filter(Atleta.nome.like(f"%{nome}%")).filter(*filtros).all()
+    else:    
+        atletas = Atleta.query.filter(*filtros).all()
+
+    return resposta_sucesso(atletas), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

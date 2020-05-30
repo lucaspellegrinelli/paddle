@@ -1,0 +1,117 @@
+<template>
+  <div class="atletas">
+    <b-container>
+      <div class="row justify-content-center">
+        <div class="col-9 p-4">
+          <h1 class="titulo"> Atletas </h1>
+          <div style="text-align: left">
+            <b-button size="sm" variant="dark" :pressed.sync="show_filtros">
+              <b-icon icon="funnel-fill"></b-icon> Filtrar
+            </b-button>
+
+            <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" v-if="show_filtros" class="justify-content-between" inline>
+              <b-form-input v-model="filtros.nome" placeholder="Nome" class="my-2 col-sm-7"></b-form-input>
+              <b-form-select v-model="filtros.categoria" :options="categorias" placeholder="categoria" class="my-2 col-sm-4">
+                <template v-slot:first>
+                  <b-form-select-option :value="null" disabled>Categoria</b-form-select-option>
+                </template>
+              </b-form-select>
+              <b-form-checkbox v-model="filtros.federado" :unchecked-value="null"> Apenas federados </b-form-checkbox>
+              <b-form-radio-group v-model="filtros.sexo">
+                <spam>Sexo: </spam> 
+                <b-form-radio value="M">Masculino</b-form-radio>
+                <b-form-radio value="F">Feminino</b-form-radio>
+              </b-form-radio-group>
+              <div class="botoes">
+                <b-button type="submit" variant="primary" size="sm">Ok</b-button>&nbsp;
+                <b-button type="reset" variant="danger" size="sm">Reset</b-button>
+              </div>
+            </b-form>
+
+          </div>
+            <div class="row-2 my-3" v-for="atleta in atletas_atuais" :key="atleta.id">
+              <p>Nome: {{atleta.nome}}</p>
+              <p>ID: {{atleta.id}}</p>
+              <p>Federado: {{atleta.federado}}</p>
+              <p>Nascimento: {{atleta.nascimento}}</p>
+          </div>
+
+          <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_atletas" :per-page="por_pagina"/>
+        </div>
+      </div>
+    </b-container>
+  </div>
+</template>
+
+<script>
+const axios = require("axios");
+
+export default {
+  components: {
+    
+  },
+  data() {
+    return {
+      atletas:[],
+      pagina_atual: 1,
+      por_pagina: 5,
+      filtros: {
+          nome: null,
+          categoria: null,
+          federado: null,
+          sexo: null
+      },
+      show_filtros: false
+    }
+  },
+  computed: {
+    total_atletas(){
+      return this.atletas.length;
+    },
+    atletas_atuais() {
+      return this.atletas.slice((this.pagina_atual - 1) * this.por_pagina,
+      this.pagina_atual * this.por_pagina);
+    }
+  },
+  created() {
+    this.getTodosAtletas();
+  },
+  methods: {
+    onSubmit() {
+      axios.get("/api/atletas", {params: this.filtros})
+      .then(resposta => {
+        this.atletas = resposta.data.conteudo;
+        alert(resposta.data.conteudo);
+      })
+      .catch(function(erro) {
+        alert(erro);
+      });
+    },
+    onReset(){
+      this.filtros = {
+        nome: null,
+        categoria: null,
+        federado: null,
+        sexo: null
+      }
+    },
+    getTodosAtletas() {
+      //TODO? Pegar somente atletas da pag atual em uma requisição e fazer uma req por pag?
+      axios.get("/api/atletas")
+      .then(resposta => {
+        this.atletas = resposta.data.conteudo;
+      })
+      .catch(function(erro) {
+        alert(erro);
+      });
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.atletas {
+  padding-top: 30px;
+}
+</style>
+

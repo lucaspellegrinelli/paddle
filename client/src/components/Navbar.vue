@@ -10,6 +10,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item to="/sobre">Sobre</b-nav-item>
           <b-nav-item to="/informes">Informes</b-nav-item>
+          <b-nav-item to="/atletas">Atletas</b-nav-item>
           <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
           <b-nav-item v-b-modal.modal-login  v-if="!this.$root.logado">Login</b-nav-item>
           <b-nav-item to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>

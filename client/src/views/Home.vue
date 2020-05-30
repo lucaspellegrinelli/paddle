@@ -35,10 +35,10 @@ export default {
     }
   },
   created(){
-    this.get_posts_recentes();
+    this.getPostsRecentes();
   },
   methods: {
-    get_posts_recentes() {
+    getPostsRecentes() {
       axios.get("/api/informes", {
         params: {
           limite: 3

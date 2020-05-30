@@ -25,7 +25,6 @@ import Informe from '@/components/Informe.vue'
 const axios = require("axios");
 
 export default {
-  name: 'Home',
   components: {
     Informe
   },
@@ -47,10 +46,10 @@ export default {
     }
   },
   created() {
-    this.get_posts();
+    this.getPosts();
   },
   methods: {
-    get_posts() {
+    getPosts() {
       //TODO? Pegar somente posts da pag atual em uma requisição e fazer uma req por pag?
       axios.get("/api/informes")
       .then(resposta => {

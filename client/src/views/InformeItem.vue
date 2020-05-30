@@ -30,10 +30,10 @@ export default {
   },
   created() {
     if (this.post == undefined)
-      this.get_post();
+      this.getPost();
   },
   methods: {
-    get_post() {
+    getPost() {
       axios.get(`/api/informes/${this.id}`)
       .then(resposta => {
         this.post = resposta.data.conteudo;

@@ -39,6 +39,11 @@ const routes = [
     props: true
   },
   {
+    path: '/atletas',
+    name: 'Atletas',
+    component: () => import('../views/Atletas.vue')
+  },
+  {
     path: '/campeonatos',
     name: 'Campeonatos',
     component: () => import('../views/Campeonatos.vue')

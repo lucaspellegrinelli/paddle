@@ -1,6 +1,8 @@
 from app import app, db, login_manager
 import bcrypt
 from flask_login import UserMixin
+from dataclasses import dataclass
+from datetime import date
 
 class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -23,7 +25,13 @@ class Usuario(UserMixin, db.Model):
     def checar_senha(self, senha):
         return bcrypt.checkpw(senha.encode(), self.senha_hash)
 
+@dataclass
 class Atleta(db.Model):
+    id: int
+    nome: str
+    nascimento: date
+    federado: bool
+
     id = db.Column(db.Integer, db.ForeignKey('usuario.id'), primary_key=True)
     nome = db.Column(db.String(64))
     nascimento = db.Column(db.Date)

@@ -40,8 +40,8 @@ export default {
    data() {
         return {
             form: {
-            titulo: '',
-            corpo: ''
+                titulo: '',
+                corpo: ''
             },
             edicao: false
         }
