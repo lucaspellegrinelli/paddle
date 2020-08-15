@@ -1,92 +1,104 @@
 # paddle
 Um sistema administrativo da federação mineira de tênis de mesa
 
+
 # Sprint Planning
 
-**1 - Como administrador, quero cadastrar atleta: Incluir Nome, Data de Nascimento (calcular idade), federado ou não, categorias, pontuação, posição rankings, histórico de presenças. - Bruno**
 
-a. Projetar e criar tabelas.
+**1 - Como usuário comum ou administrador, quero fazer login**
 
-b. Criar conexão com o banco de dados.
+a. Instalar banco de dados e criar conexão (Bruno)
 
-c. Desenvolver formulário de cadastro.
+b. Projetar e criar tabelas (Bruno)
 
-d. Implementar cadastro e atualização de atleta.
+c. Criar formulário de login no front-end (Bruno)
 
-e. Limitar permissão.
+d. Projetar query de usuário no banco de dados (Bruno)
 
-**2 - Como usuário comum ou administrador, quero fazer login - Bruno**
+e. Desenvolver sistema de autenticação no back-end (Bruno)
 
-a. Criar formulário de login no front-end
+f. Desenvolver método de logout (Bruno)
 
-b. Projetar query de usuário no banco de dados
 
-c. Desenvolver sistema de autenticação no back-end
+**2 - Como administrador, quero cadastrar atleta**
 
-d. Criar página de perfil
+a. Projetar e criar tabelas (Bruno)
 
-e. Desenvolver método de logout
+b. Desenvolver formulário de cadastro (Bruno)
 
-**3 - Como administrador, quero publicar informes na página inicial - Bárbara**
+c. Implementar cadastro de atleta (Bruno)
 
-a. Desenvolver a página inicial.
+d. Implementar atualização de atleta (Bruno)
 
-b. Instalar banco de dados, projetar e criar tabelas.
+e. Criar página de perfil (Bruno)
 
-c. Desenvolver tela para publicar informes.
+f. Limitar permissão (Bruno)
 
-d. Implementar cadastro, atualização e exclusão de informe.
 
-**4 - Como usuário comum, quero pesquisar atleta - Bárbara**
+**3 - Como administrador, quero publicar informes na página inicial**
 
-a. Criar página com formulário de pesquisa e exibição dos atletas
+a. Projetar e criar tabelas (Bárbara)
 
-b. Projetar query de pesquisa ao banco de dados
+b. Desenvolver a página inicial (Bárbara)
 
-c. Desenvolver sistema no back-end que retorna os resultados
+c. Desenvolver página para exibir os informes (Bárbara)
 
-d. Criar tabela que apresenta resultados
+d. Implementar criação de informe (Bárbara)
 
-**5 - Como administrador, quero criar campeonato - Isadora**
+e. Implementar atualização e exclusão de informe (Bárbara)
 
-a. Projetar e desenvolver tabelas.
 
-b. Criar formulário de criação de campeonato.
+**4 - Como usuário comum, quero pesquisar atleta**
 
-c. Desenvolver back-end e esquema de classificação para as etapas do campeonato.
+a. Criar página com formulário de pesquisa (Bárbara)
 
-d. Criar página para visualização do campeonato.
+b. Projetar query de pesquisa ao banco de dados (Bárbara)
 
-**6 - Como atleta ou adm, quero fazer inscrição em um campeonato - Lucas**
+c. Desenvolver sistema no back-end que retorna os resultados (Bárbara)
 
-a. Página de seleção de campeonatos disponíveis e criação de query correspondente
+d. Criar tabela que exibe os atletas (Bárbara)
 
-b. Opção de requerer inscrição em um campeonato selecionado e criação de query correspondente
 
-c. Opção do administrador de aprovar ou recusar a inscrição de um atleta
+**5 - Como administrador, quero criar campeonato**
 
-d. Criar opção de desinscrição e projetar query correspondente
+a. Projetar e desenvolver tabelas (Isadora)
 
-e. Criar tela de exibição de participantes no campeonato
+b. Criar formulário de criação de campeonato (Isadora)
 
-**7 - Como adm, quero atualizar resultados dos jogos - Luiz**
+c. Desenvolver back-end e esquema de classificação para as etapas do campeonato (Isadora)
 
-a. Opção de editar meta informações de cada partida
+d. Criar página para visualização do campeonato (Isadora)
 
-b. Opção de editar a pontuação de cada partida
 
-c. Sistema de progressão automática de jogadores no campeonato baseado na pontuação da partida e configurações do campeonato
+**6 - Como atleta ou adm, quero fazer inscrição em um campeonato**
 
-**8 - Como usuário comum, quero visualizar rankings/histórico de campeonatos - Luiz**
+a. Página de seleção de campeonatos disponíveis e criação de query correspondente (Lucas)
 
-a. A partir da aba Campeonatos criar a aba Histórico
+b. Opção de requerer inscrição em um campeonato selecionado e criação de query correspondente (Lucas)
 
-b. Colocar todos os torneios organizados em ordem cronológica (do mais recente ao mais antigo)
+c. Opção do administrador de aprovar ou recusar a inscrição de um atleta (Lucas)
 
-c. Para cada campeonato, ao clicar, mostrar o ranking do torneio e resultados
+d. Criar opção de desinscrição e projetar query correspondente (Lucas)
 
-d. Criar filtro para pesquisa de campeonatos (data, categoria, participante)
+e. Criar tela de exibição de participantes no campeonato (Lucas)
 
-e. A partir da página inicial criar a aba Rankings, com o ranking geral (top 3 em destaque podendo ser visualizado ainda na página inicial)
 
-f. Na aba Rankings criar formulário de pesquisa e mostrar tabela
+**7 - Como adm, quero atualizar resultados dos jogos**
+
+a. Opção de editar meta informações de cada partida (Luiz)
+
+b. Opção de editar a pontuação de cada partida (Luiz)
+
+c. Sistema de progressão automática de jogadores no campeonato baseado na pontuação da partida e configurações do campeonato (Luiz)
+
+
+**8 - Como usuário comum, quero visualizar histórico de campeonatos e rankings**
+
+a. A partir da página Campeonatos criar a página Histórico (Luiz)
+
+b. Exibir todos os torneios organizados em ordem cronológica (do mais recente ao mais antigo) (Luiz)
+
+c. Para cada campeonato, ao clicar, mostrar o ranking do torneio e resultados (Luiz)
+
+d. A partir da página inicial criar a página Rankings, com o ranking geral (top 3 em destaque podendo ser visualizado ainda na página inicial) (Luiz)
+
