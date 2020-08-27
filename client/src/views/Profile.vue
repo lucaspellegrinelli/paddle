@@ -37,8 +37,8 @@ export default {
     axios
       .get("/api/profile")
       .then(response => {
-        this.name = response.data.username;
-        this.id = response.data.id;
+        this.name = response.data.data.username;
+        this.id = response.data.data.id;
       })
       .catch(error => {
         if (error.response && error.response.status === 401) {

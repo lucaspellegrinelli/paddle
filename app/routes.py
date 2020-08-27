@@ -4,9 +4,15 @@ from flask_login import current_user, login_user, login_required, logout_user
 from app.user import User
 from app import db
 
+def response_success(data):
+    return jsonify({ "status": "success", "data": data })
+
+def response_error(msg):
+    return jsonify({ "status": "error", "message": msg })
+
 @app.route("/api/test")
 def test():
-    return "ok"
+    return make_response(True, None)
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -15,14 +21,14 @@ def login():
     username = request.json.get("username")
     pw = request.json.get("password")
     if username is None or username == "":
-        return "invalid form", 400
+        return response_error("Invalid form"), 400
 
     user = User.query.filter_by(username=username).first()
     if user is None or not user.check_password(pw):
-        return "invalid username or password", 401
+        return response_error("Invalid username or password"), 401
 
     login_user(user, remember=False)
-    return "success", 200
+    return response_success(None), 200
 
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -31,13 +37,13 @@ def register():
     username = request.json.get("username")
     pw = request.json.get("password")
     if username is None or pw is None:
-        return "invalid form", 400
+        return response_error("Invalid form"), 400
     if len(username) < 3 or len(pw) < 8:
-        return "invalid form", 400
+        return response_error("Invalid form"), 400
 
     user = User.query.filter_by(username=username).first()
     if user is not None:
-        return "username not available", 400
+        return response_error("Username not available"), 400
 
     user = User(username=username)
     user.set_password(pw)
@@ -45,21 +51,22 @@ def register():
     db.session.commit()
 
     login_user(user, remember=False)
-    return "success", 200
+    return response_success(None), 200
 
 @app.route("/api/profile")
 @login_required
 def get_profile_data():
-    return jsonify({
+    data = {
         "id": current_user.id,
         "username": current_user.username
-    })
+    }
+    return response_success(data), 200
 
 @app.route("/api/logout", methods=["POST"])
 @login_required
 def logout():
     logout_user()
-    return "success"
+    return response_success(None), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
