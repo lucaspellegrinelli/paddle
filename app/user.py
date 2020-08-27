@@ -22,7 +22,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         encoded = password.encode()
-        return bcrypt.hashpw(encoded, self.password_hash)
+        return bcrypt.checkpw(encoded, self.password_hash)
 
 @login_manager.user_loader
 def load_user(id):

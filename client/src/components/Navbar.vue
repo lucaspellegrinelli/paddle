@@ -15,7 +15,7 @@
             <template v-slot:button-content>
               <b-icon icon="person-fill"></b-icon>
             </template>
-            <b-dropdown-item href="/">Perfil</b-dropdown-item>
+            <b-dropdown-item href="/profile">Perfil</b-dropdown-item>
             <b-dropdown-item href="/">Sair</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

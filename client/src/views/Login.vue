@@ -52,8 +52,8 @@ export default {
           username: this.form.username,
           password: this.form.password
         })
-        .then(function(response) {
-          alert(JSON.stringify(response));
+        .then(_response => {
+          this.$router.push("profile");
         })
         .catch(function(error) {
           alert(error);
