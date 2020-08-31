@@ -12,5 +12,5 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
-from app import user
-from app import routes
+from app import usuario
+from app import rotas
