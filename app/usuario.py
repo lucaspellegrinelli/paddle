@@ -23,6 +23,12 @@ class Usuario(UserMixin, db.Model):
     def checar_senha(self, senha):
         return bcrypt.checkpw(senha.encode(), self.senha_hash)
 
+class Atleta(db.Model):
+    id = db.Column(db.Integer, db.ForeignKey('usuario.id'), primary_key=True)
+    nome = db.Column(db.String(64))
+    nascimento = db.Column(db.Date)
+    federado = db.Column(db.Boolean)
+
 @login_manager.user_loader
 def carregar_usuario(id):
     return Usuario.query.get(int(id))

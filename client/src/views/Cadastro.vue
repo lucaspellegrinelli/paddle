@@ -3,7 +3,7 @@
     <h1>Formulário de cadastro (WIP)</h1>
     <div class="row justify-content-center">
       <div class="col-4 text-left">
-        <b-form :novalidate="true" validated="true" @submit="onSubmit" @reset="onReset" v-if="show">
+        <b-form :novalidate="true" @submit="onSubmit" @reset="onReset" v-if="show">
           <b-form-group
             id="input-group-usuario"
             label="Nome de usuário:"
@@ -16,6 +16,19 @@
               required
               minlength="3"
               placeholder="Usuário"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-email"
+            label="Email:"
+            label-for="input-email"
+          >
+            <b-form-input
+              id="input-email"
+              v-model="form.email"
+              type="email"
+              placeholder="Email"
             ></b-form-input>
           </b-form-group>
 
@@ -35,6 +48,49 @@
             ></b-form-input>
           </b-form-group>
 
+          <b-form-group id="input-group-admin">
+            <b-form-checkbox v-model="form.admin">Esta conta é uma conta de administrador</b-form-checkbox>
+          </b-form-group>
+
+          <b-form-group id="input-group-atleta">
+            <b-form-checkbox v-model="form.atleta">Esta conta representa um atleta</b-form-checkbox>
+          </b-form-group>
+
+          <b-form-group id="input-group-dados-atleta" label="Dados do atleta" label-size="lg" label-class="font-weight-bold"
+ v-if="form.atleta">
+            <b-form-group
+              id="input-group-atleta-nome"
+              label="Nome completo:"
+              label-for="input-atleta-nome"
+            >
+              <b-form-input
+                id="input-atleta-nome"
+                v-model="form.dados_atleta.nome"
+                required
+                placeholder="Nome"
+              ></b-form-input>
+            </b-form-group>
+
+            <b-form-group
+              id="input-group-atleta-nascimento"
+              label="Data de nascimento:"
+              label-for="input-atleta-nascimento"
+            >
+              <b-form-datepicker
+                id="input-atleta-nascimento"
+                v-model="form.dados_atleta.nascimento"
+                placeholder="Escolha uma data"
+              ></b-form-datepicker>
+            </b-form-group>
+
+            <b-form-group id="input-group-atleta-federado">
+              <b-form-checkbox
+                v-model="form.dados_atleta.federado"
+                :state="null"
+              >Este atleta é federado</b-form-checkbox>
+            </b-form-group>
+          </b-form-group>
+
           <b-button type="submit" variant="primary">Enviar</b-button>&nbsp;
           <b-button type="reset" variant="danger">Reset</b-button>
         </b-form>
@@ -51,7 +107,15 @@ export default {
     return {
       form: {
         usuario: "",
-        senha: ""
+        email: "",
+        senha: "",
+        admin: false,
+        atleta: false,
+        dados_atleta: {
+          nome: "",
+          nascimento: "",
+          federado: false
+        }
       },
       show: true
     };
@@ -59,11 +123,9 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
+      alert(JSON.stringify(this.form));
       axios
-        .post("/api/cadastro", {
-          usuario: this.form.usuario,
-          senha: this.form.senha
-        })
+        .post("/api/cadastro", this.form)
         .then(resposta => {
           alert(JSON.stringify(resposta));
         })

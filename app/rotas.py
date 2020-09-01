@@ -1,8 +1,12 @@
 from app import app
 from flask import render_template, request, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
+from validate_email import validate_email
 from app.usuario import Usuario
+from app.usuario import Atleta
+from app.post import Post
 from app import db
+import datetime
 
 def resposta_sucesso(conteudo):
     return jsonify({ "status": "sucesso", "conteudo": conteudo })
@@ -35,21 +39,42 @@ def login():
 
 @app.route("/api/cadastro", methods=["POST"])
 def cadastro():
-    nome_usuario = request.json.get("usuario")
-    senha = request.json.get("senha")
-    if nome_usuario is None or senha is None:
-        return resposta_erro("Formulário inválido"), 400
-    if len(nome_usuario) < 3 or len(senha) < 8:
-        return resposta_erro("Formulário inválido"), 400
+    form = request.json
+    nome_usuario = form.get("usuario")
+    if nome_usuario is None or len(nome_usuario) < 3:
+        return resposta_erro("Formulário inválido: nome de usuário inválido"), 400
 
     usuario = Usuario.query.filter_by(nome_usuario=nome_usuario).first()
     if usuario is not None:
         return resposta_erro("Nome de usuário indisponível"), 400
 
-    usuario = Usuario(nome_usuario=nome_usuario, admin=False)
-    usuario.atualizar_senha(senha)
+    email = form.get("email")
+    if email is None or not validate_email(email):
+        return resposta_erro("Formulário inválido: email inválido"), 400
+    
+    senha = form.get("senha")
+    if senha is None or len(senha) < 8:
+        return resposta_erro("Formulário inválido: senha inválida"), 400
+
+    admin = form.get("admin")
+
+    usuario = Usuario(nome_usuario=nome_usuario, email=email, admin=admin)
+    usuario.atualizar_senha(senha)    
     db.session.add(usuario)
     db.session.commit()
+    
+    if form.get("atleta"):
+        id_usuario = usuario.id
+        print("oaisdjoasi: ", id_usuario)
+        dados_atleta = form.get("dados_atleta")
+        nome = dados_atleta.get("nome")
+
+        nascimento_str = dados_atleta.get("nascimento")
+        nascimento = datetime.datetime.strptime(nascimento_str, "%Y-%m-%d").date()
+        federado = dados_atleta.get("federado")
+        atleta = Atleta(id=id_usuario, nome=nome, nascimento=nascimento, federado=federado)
+        db.session.add(atleta)
+        db.session.commit()
 
     login_user(usuario, remember=False)
     return resposta_sucesso(None), 200
@@ -76,7 +101,7 @@ def get_posts_recentes():
         ultimos_3_posts = Post.query.order_by(Post.data.desc()).all()
     else:
         ultimos_3_posts = Post.query.order_by(Post.data.desc()).limit(limite).all()
-    return response_success(ultimos_3_posts), 200
+    return resposta_sucesso(ultimos_3_posts), 200
 
 @app.route("/api/publicar")
 def publicar_post():
