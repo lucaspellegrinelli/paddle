@@ -31,14 +31,14 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/register',
-    name: 'Register',
-    component: () => import('../views/Register.vue')
+    path: '/cadastro',
+    name: 'Cadastro',
+    component: () => import('../views/Cadastro.vue')
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: () => import('../views/Profile.vue')
+    path: '/perfil',
+    name: 'Perfil',
+    component: () => import('../views/Perfil.vue')
   },
   {
     path: '*',

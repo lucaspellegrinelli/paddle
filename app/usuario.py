@@ -7,6 +7,7 @@ class Usuario(UserMixin, db.Model):
     nome_usuario = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True)
     senha_hash = db.Column(db.String(128))
+    admin = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f"Usuario({self.nome_usuario})"

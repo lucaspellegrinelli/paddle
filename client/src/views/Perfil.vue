@@ -1,9 +1,9 @@
 <template>
-  <div class="profile">
+  <div class="perfil">
     <h3>Perfil do usuário</h3>
     <div class="row justify-content-center">
       <div class="col-4 text-left">
-        <p>Nome de usuário: {{ name }}</p>
+        <p>Nome de usuário: {{ nome_usuario }}</p>
         <p>ID: {{ id }}</p>
       </div>
     </div>
@@ -17,7 +17,7 @@ const axios = require("axios");
 export default {
   data() {
     return {
-      name: "",
+      nome_usuario: "",
       id: "",
     };
   },
@@ -25,23 +25,23 @@ export default {
     logout() {
       axios
         .post("/api/logout")
-        .then(_response => {
+        .then(_resposta => {
           this.$router.push("/");
         })
-        .catch(error => {
-          alert(error);
+        .catch(erro => {
+          alert(erro);
         });
     }
   },
   beforeMount() {
     axios
-      .get("/api/profile")
-      .then(response => {
-        this.name = response.data.data.username;
-        this.id = response.data.data.id;
+      .get("/api/perfil")
+      .then(resposta => {
+        this.id = resposta.data.conteudo.id;
+        this.nome_usuario = resposta.data.conteudo.usuario;
       })
-      .catch(error => {
-        if (error.response && error.response.status === 401) {
+      .catch(erro => {
+        if (erro.response && erro.response.status === 401) {
           this.$router.push("login");
         }
       });
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang="scss">
-.profile {
+.perfil {
   padding-top: 30px;
 }
 </style>

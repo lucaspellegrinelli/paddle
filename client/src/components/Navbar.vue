@@ -11,12 +11,12 @@
           <b-nav-item to="/informes">Informes</b-nav-item>
           <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
           <b-nav-item to="/login">Login</b-nav-item>
-          <b-nav-item to="/register">Register</b-nav-item>
+          <b-nav-item to="/cadastro">Cadastro</b-nav-item>
           <b-nav-item-dropdown right>
             <template v-slot:button-content>
               <b-icon icon="person-fill"></b-icon>
             </template>
-            <b-dropdown-item href="/profile">Perfil</b-dropdown-item>
+            <b-dropdown-item href="/perfil">Perfil</b-dropdown-item>
             <b-dropdown-item href="/">Sair</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

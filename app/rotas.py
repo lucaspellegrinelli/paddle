@@ -10,6 +10,15 @@ def resposta_sucesso(conteudo):
 def resposta_erro(msg):
     return jsonify({ "status": "erro", "mensagem": msg })
 
+# Um decorador para proibir entrada de usuários comuns em rotas que requerem
+# conta de administrador
+def requer_admin(func):
+    def wrapper(*args, **kwargs):
+        if not current_user.admin:
+            return resposta_erro("Acesso negado"), 403
+        return func(*args, **kwargs)
+    return wrapper
+
 @app.route("/api/login", methods=["POST"])
 def login():
     nome_usuario = request.json.get("usuario")
@@ -24,8 +33,8 @@ def login():
     login_user(usuario, remember=False)
     return resposta_sucesso(None), 200
 
-@app.route("/api/registrar", methods=["POST"])
-def registrar():
+@app.route("/api/cadastro", methods=["POST"])
+def cadastro():
     nome_usuario = request.json.get("usuario")
     senha = request.json.get("senha")
     if nome_usuario is None or senha is None:
@@ -37,7 +46,7 @@ def registrar():
     if usuario is not None:
         return resposta_erro("Nome de usuário indisponível"), 400
 
-    usuario = Usuario(nome_usuario=nome_usuario)
+    usuario = Usuario(nome_usuario=nome_usuario, admin=False)
     usuario.atualizar_senha(senha)
     db.session.add(usuario)
     db.session.commit()
