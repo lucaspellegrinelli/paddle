@@ -63,9 +63,8 @@ def cadastro():
     db.session.add(usuario)
     db.session.commit()
     
-    if form.get("atleta"):
+    if form.get("dados_atleta"):
         id_usuario = usuario.id
-        print("oaisdjoasi: ", id_usuario)
         dados_atleta = form.get("dados_atleta")
         nome = dados_atleta.get("nome")
 
