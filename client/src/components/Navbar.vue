@@ -11,14 +11,14 @@
           <b-nav-item to="/sobre">Sobre</b-nav-item>
           <b-nav-item to="/informes">Informes</b-nav-item>
           <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
-          <b-nav-item v-b-modal.modal-login>Login</b-nav-item>
-          <b-nav-item to="/cadastro">Cadastro</b-nav-item>
-          <b-nav-item-dropdown right>
+          <b-nav-item v-b-modal.modal-login  v-if="!this.$root.logado">Login</b-nav-item>
+          <b-nav-item to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>
+          <b-nav-item-dropdown right v-if="this.$root.logado">
             <template v-slot:button-content>
               <b-icon icon="person-fill"></b-icon>
             </template>
-            <b-dropdown-item href="/perfil">Perfil</b-dropdown-item>
-            <b-dropdown-item href="/">Sair</b-dropdown-item>
+            <b-dropdown-item to="/perfil">Perfil</b-dropdown-item>
+            <b-dropdown-item to="/">Sair</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>

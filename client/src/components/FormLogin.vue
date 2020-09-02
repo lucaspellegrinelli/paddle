@@ -41,10 +41,16 @@ export default {
           senha: this.form.senha
         })
         .then(_resposta => {
-          this.$router.push("perfil");
+          // TODO: retornar dados de sessão (logado, admin) do endpoint "/api/login"
+          // para que essa chamada a `atualizarSessao` não seja necessária
+          this.$root
+            .atualizarSessao()
+            .then(() => {
+              this.$router.push("perfil");
+            });
         })
-        .catch(function(error) {
-          alert(error);
+        .catch(erro => {
+          alert(erro);
         });
     }
   }

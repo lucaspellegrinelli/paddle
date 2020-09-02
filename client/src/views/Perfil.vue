@@ -26,6 +26,8 @@ export default {
       axios
         .post("/api/logout")
         .then(_resposta => {
+          this.$root.logado = false;
+          this.$root.admin = false;
           this.$router.push("/");
         })
         .catch(erro => {
@@ -33,17 +35,20 @@ export default {
         });
     }
   },
-  beforeMount() {
+  beforeMount() {    
+    if (!this.$root.logado) {
+      this.$router.push("login");
+      return;
+    }
+
     axios
       .get("/api/perfil")
       .then(resposta => {
         this.id = resposta.data.conteudo.id;
         this.nome_usuario = resposta.data.conteudo.usuario;
       })
-      .catch(erro => {
-        if (erro.response && erro.response.status === 401) {
-          this.$router.push("login");
-        }
+      .catch(_ => {
+        this.$router.push("login");
       });
   }
 };

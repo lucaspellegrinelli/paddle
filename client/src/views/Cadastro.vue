@@ -13,7 +13,13 @@
 import FormCadastro from "@/components/FormCadastro.vue";
 
 export default {
-  components: { FormCadastro }
+  components: { FormCadastro },
+  beforeMount() {
+    // Essa rota é protegida, e requer conta de administrador
+    if (!this.$root.logado || !this.$root.admin) {
+      this.$router.push("login");
+    }
+  }
 };
 </script>
 

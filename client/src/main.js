@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/style/custom.scss'
 
+const axios = require("axios");
+
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 Vue.use(Vuelidate)
@@ -15,6 +17,24 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  data: {
+    logado: null,
+    admin: null,
+  },
+  methods: {
+    atualizarSessao() {
+      return axios
+        .get("/api/sessao")
+        .then(resposta => {
+          if (resposta.data.conteudo) {
+            this.logado = resposta.data.conteudo.logado;
+            this.admin = resposta.data.conteudo.admin;
+          }
+        });
+    }
+  },
+  beforeMount() {
+    this.atualizarSessao();
+  },
+  render: h => h(App),
 }).$mount('#app')
-

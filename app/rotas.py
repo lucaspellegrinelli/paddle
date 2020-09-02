@@ -15,7 +15,8 @@ def resposta_erro(msg):
     return jsonify({ "status": "erro", "mensagem": msg })
 
 # Um decorador para proibir entrada de usuários comuns em rotas que requerem
-# conta de administrador
+# conta de administrador. Deve ser usado somente em conjunto com o decorador
+#`login_required`
 def requer_admin(func):
     def wrapper(*args, **kwargs):
         if not current_user.admin:
@@ -38,6 +39,8 @@ def login():
     return resposta_sucesso(None), 200
 
 @app.route("/api/cadastro", methods=["POST"])
+@login_required
+@requer_admin
 def cadastro():
     form = request.json
     nome_usuario = form.get("usuario")
@@ -92,6 +95,15 @@ def dados_perfil():
 def logout():
     logout_user()
     return resposta_sucesso(None), 200
+
+@app.route("/api/sessao")
+def dados_sessao():
+    logado = current_user is not None and current_user.is_authenticated
+    admin = logado and current_user.admin
+    return resposta_sucesso({
+        "logado": logado,
+        "admin": admin
+    }), 200
 
 @app.route("/api/informes")
 def get_posts_recentes():
