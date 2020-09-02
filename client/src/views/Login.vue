@@ -1,69 +1,19 @@
 <template>
   <div class="login">
-    <h1>Formulário de login (WIP)</h1>
-    <div class="row justify-content-center">
-      <div class="col-4 text-left">
-        <b-form :novalidate="true" @submit="onSubmit" @reset="onReset">
-          <b-form-group id="input-group-usuario" label="Nome de usuário:" label-for="input-usuario">
-            <b-form-input
-              id="input-usuario"
-              v-model="form.usuario"
-              required
-              placeholder="Usuário"
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group id="input-group-senha" label="Senha:" label-for="input-senha">
-            <b-form-input
-              id="input-senha"
-              v-model="form.senha"
-              type="password"
-              required
-              placeholder="Senha"
-            ></b-form-input>
-          </b-form-group>
-
-          <b-button type="submit" variant="primary">Enviar</b-button>&nbsp;
-          <b-button type="reset" variant="danger">Reset</b-button>
-        </b-form>
+    <h3>Formulário de login (WIP)</h3>
+    <div class="row justify-content-center mt-3">
+      <div class="col-2 text-left">
+        <FormLogin />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-const axios = require("axios");
+import FormLogin from "@/components/FormLogin.vue";
 
 export default {
-  data() {
-    return {
-      form: {
-        usuario: "",
-        senha: ""
-      }
-    };
-  },
-  methods: {
-    onSubmit(evt) {
-      evt.preventDefault();
-      axios
-        .post("/api/login", {
-          usuario: this.form.usuario,
-          senha: this.form.senha
-        })
-        .then(_resposta => {
-          this.$router.push("perfil");
-        })
-        .catch(function(error) {
-          alert(error);
-        });
-    },
-    onReset(evt) {
-      evt.preventDefault();
-      this.form.usuario = "";
-      this.form.senha = "";
-    }
-  }
+  components: { FormLogin }
 };
 </script>
 

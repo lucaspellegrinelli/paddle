@@ -1,16 +1,17 @@
 <template>
+  <div>
     <b-navbar toggleable="md" type="dark" variant="dark" id="navbar">
       <b-navbar-brand href="/">
-        <img src="../assets/images/navicon.svg" alt="Paddle">
-        <img src="../assets/images/navicon-hover.svg" class="hover" alt="Paddle">
-      </b-navbar-brand> 
+        <img src="../assets/images/navicon.svg" alt="Paddle" />
+        <img src="../assets/images/navicon-hover.svg" class="hover" alt="Paddle" />
+      </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item to="/sobre">Sobre</b-nav-item>
           <b-nav-item to="/informes">Informes</b-nav-item>
           <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
-          <b-nav-item to="/login">Login</b-nav-item>
+          <b-nav-item v-b-modal.modal-login>Login</b-nav-item>
           <b-nav-item to="/cadastro">Cadastro</b-nav-item>
           <b-nav-item-dropdown right>
             <template v-slot:button-content>
@@ -22,62 +23,72 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <b-modal id="modal-login" size="sm" :hide-footer="true" title="Login">
+      <FormLogin />
+    </b-modal>
+  </div>
 </template>
 
 <script>
+import FormLogin from "@/components/FormLogin.vue";
+
 export default {
-  name: 'Navbar'
-}
+  name: "Navbar",
+  components: { FormLogin }
+};
 </script>
 
 <style lang="scss">
-@import '../assets/style/custom.scss';
+@import "../assets/style/custom.scss";
 
 a {
-   outline: 0;
+  outline: 0;
 }
 
-.navbar{
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
-  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
+.navbar {
+  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
   height: $nav-height;
 }
 
-.navbar-brand .hover{
-  transition: .5s;
+.navbar-brand .hover {
+  transition: 0.5s;
   position: absolute;
   opacity: 0;
   left: 16px;
 }
 
-.navbar-brand:hover .hover{
+.navbar-brand:hover .hover {
   opacity: 100%;
 }
 
-.nav-item{
- top:50%;
+.nav-item {
+  top: 50%;
   outline: none;
   padding: 5px;
   height: $nav-height;
 
-  a:hover, a:active{
+  a:hover,
+  a:active {
     color: white;
-    transition: .3s;
+    transition: 0.3s;
   }
 }
 
-.navbar, .nav-item, .navbar-brand{
-  display:-webkit-box;
-  display:-ms-flexbox;
-  display:flex;
-  -webkit-box-align:center;
-  -ms-flex-align:center;
+.navbar,
+.nav-item,
+.navbar-brand {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
 }
 
-.nav-item .dropdown-menu a:hover, a:active{
-    color: black;
+.nav-item .dropdown-menu a:hover,
+a:active {
+  color: black;
 }
-
 </style>
