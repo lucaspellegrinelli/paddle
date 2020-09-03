@@ -7,6 +7,7 @@ from app.usuario import Atleta
 from app.post import Post
 from app import db
 import datetime
+import functools
 
 def resposta_sucesso(conteudo):
     return jsonify({ "status": "sucesso", "conteudo": conteudo })
@@ -18,6 +19,7 @@ def resposta_erro(msg):
 # conta de administrador. Deve ser usado somente em conjunto com o decorador
 #`login_required`
 def requer_admin(func):
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if not current_user.admin:
             return resposta_erro("Acesso negado"), 403
