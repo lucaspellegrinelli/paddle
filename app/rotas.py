@@ -4,6 +4,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from validate_email import validate_email
 from app.usuario import Usuario
 from app.usuario import Atleta
+from app.campeonato import Campeonato
 from app.post import Post
 from app import db
 import datetime
@@ -178,6 +179,19 @@ def get_atletas():
         atletas = Atleta.query.filter(*filtros).all()
 
     return resposta_sucesso(atletas), 200
+    
+@app.route("/api/campeonatos", methods=["GET"])
+def get_campeonatos():
+    campeonatos = []
+    filtros = dict()
+
+    nome = request.args.get("nome")
+    if (nome is not None and nome != ""):
+        campeoantos = Campeonato.query.filter(Campeonato.nome.like(f"%{nome}%")).all()
+    else:    
+        campeoantos = Campeonato.query.all()
+
+    return resposta_sucesso(campeoantos), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
