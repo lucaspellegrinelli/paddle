@@ -185,12 +185,13 @@ def get_campeonatos():
     campeonatos = []
     filtros = dict()
 
-    nome = request.args.get("nome")
-    if (nome is not None and nome != ""):
-        campeoantos = Campeonato.query.filter(Campeonato.nome.like(f"%{nome}%")).all()
-    else:    
-        campeoantos = Campeonato.query.all()
+    for filtro in request.args:
+        chave = text(filtro)
+        valor = request.args.get(filtro)
+        if(valor is not None and valor != "" and filtro != "nome"):
+            filtros[chave] = valor
 
+    campeoantos = Campeonato.query.filter(*filtros).all()
     return resposta_sucesso(campeoantos), 200
 
 @app.route("/", defaults={"path": ""})
