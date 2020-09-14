@@ -30,19 +30,16 @@
 
           </div>
           <div class="tabela">
-            <b-table
+            <b-table ref="table"
               striped
               hover 
               outlined
-              :items="atletas"
+              :items="atletas_filtrados"
               :fields="campos"
               :current-page="pagina_atual"
               :per-page="por_pagina"
               :sort-by.sync="ordenar_por"
               :sort-desc.sync="ordem_decresc"
-              :filter="filtros.nome"
-              :filterIncludedFields="filtros.categoria"
-              @filtered="onFiltered"
             > 
             </b-table>
           </div>
@@ -63,15 +60,14 @@ export default {
   data() {
     return {
       atletas: [],
+      campos: ['nome', 'nascimento', 'federado'],
       ordenar_por: 'Nome',
       ordem_decresc: false,
       pagina_atual: 1,
       por_pagina: 10,
       filtros: {
           nome: null,
-          categoria: null,
-          federado: null,
-          sexo: null
+          federado: null
       },
       show_filtros: false
     }
@@ -79,10 +75,28 @@ export default {
   computed: {
     total_atletas(){
       return this.atletas.length;
+    },
+    atletas_filtrados(){
+      let atletas = this.atletas;
+      if (this.filtros.federado) {
+         atletas = atletas.filter((a) => a.federado == true);
+      }
+      if (this.filtros.nome){
+         atletas = atletas.filter((a) => a.nome.includes(this.filtros.nome));
+      }
+      return atletas;
     }
   },
   created() {
     this.getTodosAtletas();
+  },
+  watch: {
+      filtros: {
+          handler: function () {
+            this.$refs.table.refresh()
+          },
+          deep: true
+      }
   },
   methods: {
     onReset(){
@@ -102,9 +116,6 @@ export default {
       .catch(function(erro) {
         alert(erro);
       });
-    },
-    onFiltered(_) {
-      this.pagina_atual = 1
     }
   }
 }
