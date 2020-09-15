@@ -12,6 +12,7 @@
           <b-nav-item to="/informes">Informes</b-nav-item>
           <b-nav-item to="/atletas">Atletas</b-nav-item>
           <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
+          <b-nav-item to="/ranking">Ranking</b-nav-item>
           <b-nav-item v-b-modal.modal-login  v-if="!this.$root.logado">Login</b-nav-item>
           <b-nav-item to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>
           <b-nav-item-dropdown right v-if="this.$root.logado">
