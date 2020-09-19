@@ -49,6 +49,11 @@ const routes = [
     component: () => import('../views/Campeonatos.vue')
   },
   {
+    path: '/campInfo',
+    name: 'CampInfo',
+    component: () => import('../views/CampInfo.vue')
+  },
+  {
     path: '/ranking',
     name: 'Ranking',
     component: () => import('../views/Ranking.vue')

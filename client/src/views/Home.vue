@@ -12,6 +12,34 @@
       </b-container>
       <b-container>
         <h1 class="titulo"> Ranking </h1>
+        <img src="../assets/images/podio.png" alt="podio" width=360 height=240>
+        <h2 class="posicao"> 1&ordm; lugar </h2>
+
+        <template>
+          <div class="table1">
+            <b-table ref="table1" striped hover :items="items"></b-table>
+          </div>
+        </template>
+
+        <h2 class="posicao"> 2&ordm; lugar </h2>
+
+        <template>
+          <div class="table2">
+            <b-table ref="table2" striped hover :items="items"></b-table>
+          </div>
+        </template>
+
+        <h2 class="posicao"> 3&ordm; lugar </h2>
+
+        <template>
+          <div class="table3">
+            <b-table ref="table3" striped hover :items="items"></b-table>
+          </div>
+        </template>
+    
+        <b-button :to="'ranking'" size="sm" variant="outline-dark" style="margin-top: 20px">
+          Ver todos
+        </b-button>
       </b-container>
     </b-container>
   </div>
@@ -53,6 +81,42 @@ export default {
     }
   }
 }
+</script>
+
+<script>
+  export default {
+    name: 'table1',
+    data() {
+      return {
+        items: [
+          { nome: "Barbara" },
+        ]}
+    }
+  }
+</script>
+
+<script>
+  export default {
+    name: 'table2',
+    data() {
+      return {
+        items: [
+          { nome: "Ana" },
+        ]}
+    }
+  }
+</script>
+
+<script>
+  export default {
+    name: 'table3',
+    data() {
+      return {
+        items: [
+          { nome: "Pedro" },
+        ]}
+    }
+  }
 </script>
 
 <style scoped lang="scss">
