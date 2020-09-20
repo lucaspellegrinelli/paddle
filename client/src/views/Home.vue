@@ -17,7 +17,7 @@
 
         <template>
           <div class="table1">
-            <b-table ref="table1" striped hover :items="items"></b-table>
+            <b-table ref="table1" striped hover :fields="campos" :items="items1"></b-table>
           </div>
         </template>
 
@@ -25,7 +25,7 @@
 
         <template>
           <div class="table2">
-            <b-table ref="table2" striped hover :items="items"></b-table>
+            <b-table ref="table2" striped hover :fields="campos" :items="items2"></b-table>
           </div>
         </template>
 
@@ -33,7 +33,7 @@
 
         <template>
           <div class="table3">
-            <b-table ref="table3" striped hover :items="items"></b-table>
+            <b-table ref="table3" striped hover :fields="campos" :items="items3"></b-table>
           </div>
         </template>
     
@@ -58,12 +58,30 @@ export default {
   },
   data() {
     return {
+      atletas: [],
+
       ultimos_posts: [],
-      esconder_texto: true
+      esconder_texto: true,
+        
+        campos: ['nome'],
+
+        items1: [
+         'ana'],
+
+        items2:[
+          'pedro'],
+
+        items3:[
+          'jao']
     }
   },
+
   created(){
     this.getPostsRecentes();
+  
+    this.getTodosAtletas();
+
+    this.sortedCandidates();
   },
   methods: {
     getPostsRecentes() {
@@ -78,45 +96,23 @@ export default {
       .catch(function(error) {
         alert(error);
       });
+    },
+        getTodosAtletas() {
+      //TODO? Pegar somente atletas da pag atual em uma requisição e fazer uma req por pag?
+      axios.get("/api/atletas")
+      .then(resposta => {
+        this.atletas = resposta.data.conteudo;
+      })
+      .catch(function(erro) {
+        alert(erro);
+      });
+    },
+        sortedCandidates(){
+          return this.atletas.sort((a, b) => { return b.pontuacao - a.pontuacao;});
     }
   }
+
 }
-</script>
-
-<script>
-  export default {
-    name: 'table1',
-    data() {
-      return {
-        items: [
-          { nome: "Barbara" },
-        ]}
-    }
-  }
-</script>
-
-<script>
-  export default {
-    name: 'table2',
-    data() {
-      return {
-        items: [
-          { nome: "Ana" },
-        ]}
-    }
-  }
-</script>
-
-<script>
-  export default {
-    name: 'table3',
-    data() {
-      return {
-        items: [
-          { nome: "Pedro" },
-        ]}
-    }
-  }
 </script>
 
 <style scoped lang="scss">
