@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from validate_email import validate_email
 from app.usuario import Usuario
 from app.usuario import Atleta
-from app.campeonato import Campeonato, Participantes
+from app.campeonato import Campeonato, Participantes, Estilo
 from app.post import Post
 from app import db
 import json
@@ -191,13 +191,15 @@ def get_campeonatos():
         Campeonato.nome,
         Campeonato.data,
         Campeonato.capacidade,
-        Campeonato.estilo,
+        Estilo.nome.label("estilo"),
         Campeonato.comentarios,
         func.count(Participantes.id)
     ).filter(
         Campeonato.id == Participantes.id_camp
     ).filter(
         Atleta.id == Participantes.id_camp
+    ).filter(
+        Campeonato.estilo == Estilo.id
     ).all()
 
     def line_to_dict(l):
@@ -212,7 +214,21 @@ def get_campeonatos():
         }
 
     result = [line_to_dict(l) for l in result]
-    return json.dumps(result), 200
+    return resposta_sucesso(result), 200
+
+@app.route("/api/inscricao", methods=["POST"])
+@login_required
+def inscricao_campeonato():
+    print(request.get_json())
+    id_camp = request.get_json().get('id_camp')
+    id_atleta = request.get_json().get('id_atleta')
+    if id_atleta == current_user.id:
+        novo_participantes = Participantes(id_camp=id_camp, id_atleta=id_atleta, aprovado=0)
+        db.session.add(novo_participantes)
+        db.session.commit()
+        return resposta_sucesso(None), 200
+    else:
+        return resposta_erro("Id de usuário inválido"), 400
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

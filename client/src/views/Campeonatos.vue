@@ -18,7 +18,7 @@
 
     <b-modal hide-footer size="lg" ref="campeonato-info-modal" v-bind:title="camp_info.titulo">
       <p>Data: {{ camp_info.data }}</p>
-      <p>Capacidade: {{ camp_info.capacidade }}</p>
+      <p>Participantes: {{ camp_info.participantes }} / {{ camp_info.capacidade }}</p>
       <p>Estilo: {{ camp_info.estilo }}</p>
       <p>Comentários: {{ camp_info.comentarios }}</p>
 
@@ -26,7 +26,7 @@
         <b-col v-if="this.$root.logado && this.$root.admin">
           <b-button class="mt-3" variant="outline-secondary" block @click="gerenciar_camp">Gerenciar</b-button>
         </b-col>
-        <b-col v-if="this.$root.logado">
+        <b-col v-if="this.$root.logado && camp_info['participantes'] < camp_info['capacidade']">
           <b-button class="mt-3" variant="outline-secondary" block @click="inscrever_camp">Inscrever-se</b-button>
         </b-col>
         <b-col>
@@ -47,11 +47,13 @@ export default {
   data() {
     return {
       camp_info: {
+        id: 0,
         titulo: "",
         data: "",
-        capacidade: "",
+        capacidade: 0,
         estilo: "",
-        comentarios: ""
+        comentarios: "",
+        participantes: 0
       },
       campeonatos: [],
       campos: ["nome", "data"]
@@ -66,14 +68,29 @@ export default {
       this.popular_modal(this.campeonatos[index]);
     },
     popular_modal(info){
+      this.camp_info.id = info["id"];
       this.camp_info.titulo = info["nome"];
       this.camp_info.data = info["data"];
       this.camp_info.capacidade = info["capacidade"];
       this.camp_info.estilo = info["estilo"];
       this.camp_info.comentarios = info["comentarios"];
+      this.camp_info.participantes = info["participantes"];
     },
     fechar_model(){
       this.$refs['campeonato-info-modal'].hide();
+    },
+    inscrever_camp(){
+      axios.get("/api/perfil").then(resposta => {
+        let payload = {
+          "id_atleta": resposta.data.conteudo.id,
+          "id_camp": this.camp_info.id,
+        }
+
+        axios.post("/api/inscricao", payload).then(response => {
+        }).catch(erro => {
+          alert(erro);
+        });
+      });
     },
     getTodosCampeonatos() {
       axios.get("/api/campeonatos")
@@ -85,20 +102,18 @@ export default {
           return day + "/" + month + "/" + year;
         }
 
-        const estilos = [
-          "Estilo A", "Estilo B", "Estilo C"
-        ]
-
         this.campeonatos = [];
         resposta.data.conteudo.forEach(camp => {
           let formatted_date = format_date(new Date(camp.data));
 
           this.campeonatos.push({
+            "id": camp.id,
             "nome": camp.nome,
             "data": formatted_date,
             "capacidade": camp.capacidade,
-            "estilo": estilos[camp.estilo],
-            "comentarios": camp.comentarios
+            "estilo": camp.estilo,
+            "comentarios": camp.comentarios,
+            "participantes": camp.participantes
           });
         });
       })

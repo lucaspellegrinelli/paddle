@@ -24,6 +24,14 @@ class Campeonato(db.Model):
 		return f"Campeonato({self.nome})"
 
 @dataclass
+class Estilo(db.Model):
+	id: int
+	nome: str
+
+	id = db.Column(db.Integer, primary_key=True)
+	nome = db.Column(db.Text)
+
+@dataclass
 class Participantes(db.Model):
 	id: int
 	id_camp: int
