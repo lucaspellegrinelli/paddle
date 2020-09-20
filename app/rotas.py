@@ -1,14 +1,12 @@
 from app import app
-from sqlalchemy import func
 from flask import render_template, request, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
 from validate_email import validate_email
 from app.usuario import Usuario
 from app.usuario import Atleta
-from app.campeonato import Campeonato, Participantes
+from app.campeonato import Campeonato
 from app.post import Post
 from app import db
-import json
 import datetime
 import functools
 from sqlalchemy.sql import text
@@ -185,34 +183,16 @@ def get_atletas():
 @app.route("/api/campeonatos", methods=["GET"])
 def get_campeonatos():
     campeonatos = []
+    filtros = dict()
 
-    result = db.session.query(
-        Campeonato.id,
-        Campeonato.nome,
-        Campeonato.data,
-        Campeonato.capacidade,
-        Campeonato.estilo,
-        Campeonato.comentarios,
-        func.count(Participantes.id)
-    ).filter(
-        Campeonato.id == Participantes.id_camp
-    ).filter(
-        Atleta.id == Participantes.id_camp
-    ).all()
+    for filtro in request.args:
+        chave = text(filtro)
+        valor = request.args.get(filtro)
+        if(valor is not None and valor != "" and filtro != "nome"):
+            filtros[chave] = valor
 
-    def line_to_dict(l):
-        return {
-            "id": l[0],
-            "nome": l[1],
-            "data": str(l[2]),
-            "capacidade": l[3],
-            "estilo": l[4],
-            "comentarios": l[5],
-            "participantes": l[6]
-        }
-
-    result = [line_to_dict(l) for l in result]
-    return json.dumps(result), 200
+    campeoantos = Campeonato.query.filter(*filtros).all()
+    return resposta_sucesso(campeoantos), 200
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

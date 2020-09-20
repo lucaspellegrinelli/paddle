@@ -41,7 +41,10 @@
               :per-page="por_pagina"
               :sort-by.sync="ordenar_por"
               :sort-desc.sync="ordem_decresc"
-            > 
+            >
+            <template v-slot:cell(index)="data">
+              {{ data.index + 1 }}
+            </template>
             </b-table>
           </div>
 
@@ -61,8 +64,9 @@ export default {
   data() {
     return {
       atletas: [],
-      campos: ['classificação', 'nome', 'nascimento', 'federado', 'pontuação'],
-      ordenar_por: 'Nome',
+      campos: [{key: 'index', label:"Classificação"}, 'nome', 'nascimento', 'federado', {key: 'pontuacao', label:"Pontuação"}],
+
+      ordenar_por: 'pontuacao',
       ordem_decresc: true,
       pagina_atual: 1,
       por_pagina: 10,

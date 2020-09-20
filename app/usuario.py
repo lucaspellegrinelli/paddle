@@ -31,11 +31,14 @@ class Atleta(db.Model):
     nome: str
     nascimento: date
     federado: bool
+    pontuacao: int
+
 
     id = db.Column(db.Integer, db.ForeignKey('usuario.id'), primary_key=True)
     nome = db.Column(db.String(64))
     nascimento = db.Column(db.Date)
     federado = db.Column(db.Boolean)
+    pontuacao = db.Column(db.Integer)
 
 @login_manager.user_loader
 def carregar_usuario(id):
