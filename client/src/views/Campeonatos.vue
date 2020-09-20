@@ -5,38 +5,38 @@
         <div class="col-12 p-4">
           <h1 class="titulo"> Campeonatos </h1>
           <div style="text-align: left">
-
-            <b-button size="sm" variant="dark" :pressed.sync="show_filtros">
-              <b-icon icon="funnel-fill"></b-icon> Filtrar
-            </b-button>
-
-            <b-form @reset.prevent="onReset" v-if="show_filtros" class="justify-content-between" inline>
-              <b-form-input v-model="filtros.nome" placeholder="Nome" class="my-2 col-sm-7"></b-form-input>
-            </b-form>
-
           </div>
           <div class="tabela">
-            <b-table
-              striped
-              hover 
-              outlined
-              :items="campeonatos"
-              :fields="campos"
-              :current-page="pagina_atual"
-              :per-page="por_pagina"
-              :sort-by.sync="ordenar_por"
-              :sort-desc.sync="ordem_decresc"
-              :filter="filtros.nome"
-              @filtered="onFiltered"
-            > 
-            </b-table>
-          </div>
-
-          <b-pagination class="justify-content-center" v-model="pagina_atual" :total-rows="total_campeonatos" :per-page="por_pagina"/>
-        
+            <b-table striped hover outlined
+            :items="campeonatos"
+            :fields="campos"
+            @row-clicked="row_click_handler"></b-table>
+          </div>      
         </div>
       </div>
     </b-container>
+
+    <b-modal hide-footer size="lg" ref="campeonato-info-modal" v-bind:title="camp_info.titulo">
+      <p>Data: {{ camp_info.data }}</p>
+      <p>Capacidade: {{ camp_info.capacidade }}</p>
+      <p>Estilo: {{ camp_info.estilo }}</p>
+      <p>Comentários: {{ camp_info.comentarios }}</p>
+
+      <b-row>
+        <b-col v-if="this.$root.logado && this.$root.admin">
+          <b-button class="mt-3" variant="outline-secondary" block @click="gerenciar_camp">Gerenciar</b-button>
+        </b-col>
+        <b-col v-if="this.$root.logado">
+          <b-button class="mt-3" variant="outline-secondary" block @click="inscrever_camp">Inscrever-se</b-button>
+        </b-col>
+        <b-col>
+          <b-button class="mt-3" variant="outline-secondary" block @click="visualizar_camp">Visualizar</b-button>
+        </b-col>
+        <b-col>
+          <b-button class="mt-3" variant="outline-danger" block @click="fechar_model">Fechar</b-button>
+        </b-col>
+      </b-row>
+    </b-modal>
   </div>
 </template>
 
@@ -44,38 +44,40 @@
 const axios = require("axios");
 
 export default {
-  components: {},
   data() {
     return {
-      campeonatos: [],
-      ordenar_por: 'Nome',
-      ordem_decresc: false,
-      pagina_atual: 1,
-      por_pagina: 10,
-      filtros: {
-          nome: null
+      camp_info: {
+        titulo: "",
+        data: "",
+        capacidade: "",
+        estilo: "",
+        comentarios: ""
       },
-      show_filtros: false
-    }
-  },
-  computed: {
-    total_campeonatos(){
-      return this.campeonatos.length;
+      campeonatos: [],
+      campos: ["nome", "data"]
     }
   },
   created() {
     this.getTodosCampeonatos();
   },
   methods: {
-    onReset(){
-      this.filtros = {
-        nome: null
-      }
+    row_click_handler(_, index){
+      this.$refs['campeonato-info-modal'].show();
+      this.popular_modal(this.campeonatos[index]);
+    },
+    popular_modal(info){
+      this.camp_info.titulo = info["nome"];
+      this.camp_info.data = info["data"];
+      this.camp_info.capacidade = info["capacidade"];
+      this.camp_info.estilo = info["estilo"];
+      this.camp_info.comentarios = info["comentarios"];
+    },
+    fechar_model(){
+      this.$refs['campeonato-info-modal'].hide();
     },
     getTodosCampeonatos() {
       axios.get("/api/campeonatos")
       .then(resposta => {
-
         let format_date = function(date){
           let day = date.getDate().toString().padStart(2, '0');
           let month = (date.getMonth()+1).toString().padStart(2, '0');
@@ -103,13 +105,14 @@ export default {
       .catch(function(erro) {
         alert(erro);
       });
-    },
-    onFiltered(_) {
-      this.pagina_atual = 1
     }
   }
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+  .table td{
+    cursor: pointer;
+  }
+</style>
 

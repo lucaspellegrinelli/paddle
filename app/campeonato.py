@@ -22,3 +22,15 @@ class Campeonato(db.Model):
 
 	def __repr__(self):
 		return f"Campeonato({self.nome})"
+
+@dataclass
+class Participantes(db.Model):
+	id: int
+	id_camp: int
+	id_atleta: int
+	aprovado: int
+
+	id = db.Column(db.Integer, primary_key=True)
+	id_camp = db.Column(db.Integer)
+	id_atleta = db.Column(db.Integer)
+	aprovado = db.Column(db.Integer)
