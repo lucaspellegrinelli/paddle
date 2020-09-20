@@ -194,12 +194,17 @@ def get_campeonatos():
         Estilo.nome.label("estilo"),
         Campeonato.comentarios,
         func.count(Participantes.id)
-    ).filter(
-        Campeonato.id == Participantes.id_camp
-    ).filter(
-        Atleta.id == Participantes.id_camp
-    ).filter(
-        Campeonato.estilo == Estilo.id
+    ).join(
+        Participantes,
+        Participantes.id_camp == Campeonato.id,
+        isouter=True
+    ).join(
+        Atleta,
+        Participantes.id_atleta == Atleta.id,
+        isouter=True
+    ).join(
+        Estilo,
+        Estilo.id == Campeonato.estilo
     ).all()
 
     def line_to_dict(l):
