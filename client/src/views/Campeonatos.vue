@@ -86,7 +86,7 @@ export default {
           "id_camp": this.camp_info.id,
         }
 
-        axios.post("/api/inscricao", payload).then(response => {
+        axios.post("/api/inscricao", payload).then(_ => {
         }).catch(erro => {
           alert(erro);
         });
