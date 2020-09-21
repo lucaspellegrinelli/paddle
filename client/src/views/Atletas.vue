@@ -82,7 +82,7 @@ export default {
          atletas = atletas.filter((a) => a.federado == true);
       }
       if (this.filtros.nome){
-         atletas = atletas.filter((a) => a.nome.includes(this.filtros.nome));
+         atletas = atletas.filter((a) => a.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(this.filtros.nome));
       }
       return atletas;
     }
