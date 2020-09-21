@@ -21,6 +21,7 @@
       <p>Participantes: {{ camp_info.participantes }} / {{ camp_info.capacidade }}</p>
       <p>Estilo: {{ camp_info.estilo }}</p>
       <p>Comentários: {{ camp_info.comentarios }}</p>
+      <p v-if="camp_info.inscrito">Status inscrição: {{ camp_info.inscr_aprovada ? "Aprovada" : "Em espera" }}</p>
 
       <b-row>
         <b-col v-if="this.$root.logado && this.$root.admin">
@@ -30,7 +31,7 @@
           <b-button class="mt-3" variant="outline-secondary" block @click="visualizar_camp">Visualizar</b-button>
         </b-col>
         <b-col v-if="this.$root.logado && camp_info['participantes'] < camp_info['capacidade']">
-          <b-button class="mt-3" variant="outline-success" block @click="inscrever_camp">{{ botao_inscricao }}</b-button>
+          <b-button class="mt-3" variant="outline-success" block @click="inscrever_camp">{{ camp_info.inscrito ? "Desinscrever-se" : "Inscrever-se" }}</b-button>
         </b-col>
         <b-col>
           <b-button class="mt-3" variant="outline-danger" block @click="fechar_model">Fechar</b-button>
@@ -53,9 +54,10 @@ export default {
         capacidade: 0,
         estilo: "",
         comentarios: "",
-        participantes: 0
+        participantes: 0,
+        inscrito: false,
+        inscr_aprovada: false
       },
-      botao_inscricao: "",
       campeonatos: [],
       campos: ["nome", "data"]
     }
@@ -77,46 +79,39 @@ export default {
       this.camp_info.estilo = info["estilo"];
       this.camp_info.comentarios = info["comentarios"];
       this.camp_info.participantes = info["participantes"];
-
-      let is_inscrito = false;
+      this.camp_info.inscrito = false;
+      
       this.inscricoes.forEach(insc => {
         if(this.camp_info.id == insc.id){
-          is_inscrito = true;
+          this.camp_info.inscrito = true;
+          this.camp_info.inscr_aprovada = insc.aprovado == 1;
           return;
         }
       });
-
-      if(is_inscrito){
-        this.botao_inscricao = "Desinscrever-se";
-      }else{
-        this.botao_inscricao = "Inscrever-se";
-      }
     },
     fechar_model(){
       this.$refs['campeonato-info-modal'].hide();
     },
     inscrever_camp(){
-      let is_inscrito = false;
-      this.inscricoes.forEach(insc => {
-        if(this.camp_info.id == insc.id){
-          is_inscrito = true;
-          return;
-        }
-      });
-
       axios.get("/api/perfil").then(resposta => {
         let payload = {
           "id_atleta": resposta.data.conteudo.id,
           "id_camp": this.camp_info.id,
         }
 
-        if(is_inscrito){
+        if(this.camp_info.inscrito){
           axios.post("/api/desinscricao", payload).then(_ => {
+            this.inscricoes = this.inscricoes.filter(i => i.id !== this.camp_info.id);
+            this.camp_info.participantes--;
+            this.fechar_model();
           }).catch(erro => {
             alert(erro);
           });
         }else{
           axios.post("/api/inscricao", payload).then(_ => {
+            this.inscricoes.push({ "id": this.camp_info.id, "aprovado": 0 });
+            this.camp_info.participantes++;
+            this.fechar_model();
           }).catch(erro => {
             alert(erro);
           });
