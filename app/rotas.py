@@ -184,14 +184,12 @@ def get_atletas():
     
 @app.route("/api/campeonatos", methods=["GET"])
 def get_campeonatos():
-    campeonatos = []
-
     result = db.session.query(
         Campeonato.id,
         Campeonato.nome,
         Campeonato.data,
         Campeonato.capacidade,
-        Estilo.nome.label("estilo"),
+        Campeonato.estilo,
         Campeonato.comentarios,
         func.count(Participantes.id)
     ).join(
@@ -202,16 +200,16 @@ def get_campeonatos():
         Atleta,
         Participantes.id_atleta == Atleta.id,
         isouter=True
-    ).join(
-        Estilo,
-        Estilo.id == Campeonato.estilo
     ).all()
 
     def line_to_dict(l):
+        d = datetime.datetime.strptime(str(l[2]), '%Y-%m-%d')
+        s = (d - datetime.datetime(1970,1,1)).total_seconds()
+
         return {
             "id": l[0],
             "nome": l[1],
-            "data": str(l[2]),
+            "data": s,
             "capacidade": l[3],
             "estilo": l[4],
             "comentarios": l[5],
@@ -219,7 +217,22 @@ def get_campeonatos():
         }
 
     result = [line_to_dict(l) for l in result]
+    print(result)
     return resposta_sucesso(result), 200
+
+@app.route("/api/atualizar_campeonato", methods=["POST"])
+@login_required
+@requer_admin
+def atualizar_campeonatos():
+    id_camp = request.get_json().get('id')
+    camp = db.session.query(Campeonato).filter(Campeonato.id == id_camp).first()
+    camp.nome = request.get_json().get('nome')
+    camp.data = datetime.datetime.fromtimestamp(request.get_json().get('data') / 1000.0)
+    camp.capacidade = request.get_json().get('capacidade')
+    camp.estilo = request.get_json().get('estilo')
+    camp.comentarios = request.get_json().get('comentarios')
+    db.session.commit()
+    return resposta_sucesso(None), 200
 
 @app.route("/api/inscricao", methods=["POST"])
 @login_required
