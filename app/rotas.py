@@ -226,9 +226,31 @@ def get_campeonatos():
 def inscricao_campeonato():
     id_camp = request.get_json().get('id_camp')
     id_atleta = request.get_json().get('id_atleta')
+    print("Inscricao", id_camp, id_atleta)
     if id_atleta == current_user.id or current_user.admin:
         novo_participantes = Participantes(id_camp=id_camp, id_atleta=id_atleta, aprovado=0)
         db.session.add(novo_participantes)
+        db.session.commit()
+        return resposta_sucesso(None), 200
+    else:
+        return resposta_erro("Id de usuário inválido"), 400
+
+@app.route("/api/desinscricao", methods=["POST"])
+@login_required
+def desinscricao_campeonato():
+    id_camp = request.get_json().get('id_camp')
+    id_atleta = request.get_json().get('id_atleta')
+    print("Desinscricao", id_camp, id_atleta)
+    if id_atleta == current_user.id or current_user.admin:
+        target = db.session.query(
+            Participantes
+        ).filter(
+            Participantes.id_atleta == id_atleta
+        ).filter(
+            Participantes.id_camp == id_camp
+        ).first()
+
+        db.session.delete(target)
         db.session.commit()
         return resposta_sucesso(None), 200
     else:
@@ -241,7 +263,6 @@ def get_inscricoes():
     if id_atleta == current_user.id or current_user.admin:
 
         result = db.session.query(
-            Participantes.id,
             Campeonato.id,
             Participantes.aprovado
         ).join(
@@ -249,8 +270,13 @@ def get_inscricoes():
             Participantes.id_atleta == id_atleta
         ).all()
 
-        print("SIHUASAUISHUISUAHSUISH", result)
+        def line_to_dict(l):
+            return {
+                "id": l[0],
+                "aprovado": l[1]
+            }
 
+        result = [line_to_dict(l) for l in result]
         return resposta_sucesso(result), 200
     else:
         return resposta_erro("Id de usuário inválido"), 400

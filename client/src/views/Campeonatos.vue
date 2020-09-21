@@ -26,11 +26,11 @@
         <b-col v-if="this.$root.logado && this.$root.admin">
           <b-button class="mt-3" variant="outline-secondary" block @click="gerenciar_camp">Gerenciar</b-button>
         </b-col>
-        <b-col v-if="this.$root.logado && camp_info['participantes'] < camp_info['capacidade']">
-          <b-button class="mt-3" variant="outline-secondary" block @click="inscrever_camp">Inscrever-se</b-button>
-        </b-col>
         <b-col>
           <b-button class="mt-3" variant="outline-secondary" block @click="visualizar_camp">Visualizar</b-button>
+        </b-col>
+        <b-col v-if="this.$root.logado && camp_info['participantes'] < camp_info['capacidade']">
+          <b-button class="mt-3" variant="outline-success" block @click="inscrever_camp">{{ botao_inscricao }}</b-button>
         </b-col>
         <b-col>
           <b-button class="mt-3" variant="outline-danger" block @click="fechar_model">Fechar</b-button>
@@ -55,12 +55,14 @@ export default {
         comentarios: "",
         participantes: 0
       },
+      botao_inscricao: "",
       campeonatos: [],
       campos: ["nome", "data"]
     }
   },
   created() {
     this.getTodosCampeonatos();
+    this.getInscricoes();
   },
   methods: {
     row_click_handler(_, index){
@@ -75,21 +77,50 @@ export default {
       this.camp_info.estilo = info["estilo"];
       this.camp_info.comentarios = info["comentarios"];
       this.camp_info.participantes = info["participantes"];
+
+      let is_inscrito = false;
+      this.inscricoes.forEach(insc => {
+        if(this.camp_info.id == insc.id){
+          is_inscrito = true;
+          return;
+        }
+      });
+
+      if(is_inscrito){
+        this.botao_inscricao = "Desinscrever-se";
+      }else{
+        this.botao_inscricao = "Inscrever-se";
+      }
     },
     fechar_model(){
       this.$refs['campeonato-info-modal'].hide();
     },
     inscrever_camp(){
+      let is_inscrito = false;
+      this.inscricoes.forEach(insc => {
+        if(this.camp_info.id == insc.id){
+          is_inscrito = true;
+          return;
+        }
+      });
+
       axios.get("/api/perfil").then(resposta => {
         let payload = {
           "id_atleta": resposta.data.conteudo.id,
           "id_camp": this.camp_info.id,
         }
 
-        axios.post("/api/inscricao", payload).then(_ => {
-        }).catch(erro => {
-          alert(erro);
-        });
+        if(is_inscrito){
+          axios.post("/api/desinscricao", payload).then(_ => {
+          }).catch(erro => {
+            alert(erro);
+          });
+        }else{
+          axios.post("/api/inscricao", payload).then(_ => {
+          }).catch(erro => {
+            alert(erro);
+          });
+        }
       });
     },
     getTodosCampeonatos() {
@@ -97,7 +128,7 @@ export default {
       .then(resposta => {
         let format_date = function(date){
           let day = date.getDate().toString().padStart(2, '0');
-          let month = (date.getMonth()+1).toString().padStart(2, '0');
+          let month = (date.getMonth() + 1).toString().padStart(2, '0');
           let year = date.getFullYear();
           return day + "/" + month + "/" + year;
         }
@@ -119,6 +150,14 @@ export default {
       })
       .catch(function(erro) {
         alert(erro);
+      });
+    },
+    getInscricoes(){
+      axios.get("/api/perfil").then(resposta => {
+        let payload = { "id_atleta": resposta.data.conteudo.id }
+        axios.post("/api/inscricoes", payload).then(response => {
+          this.inscricoes = response.data.conteudo;
+        });
       });
     }
   }
