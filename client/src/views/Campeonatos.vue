@@ -59,6 +59,14 @@
           ></b-form-datepicker>
         </b-form-group>
 
+        <b-form-group label="Capacidade:">
+          <b-form-select
+            ref="edit-estilo-camp"
+            v-model="edit_info.capacidade"
+            :options="capacidades"
+          ></b-form-select>
+        </b-form-group>
+
         <b-form-group label="Estilo:">
           <b-form-select
             ref="edit-estilo-camp"
@@ -117,6 +125,12 @@ export default {
       estilos: [
         { value: 1, text: "Mata-Mata" },
         { value: 2, text: "Grupos" },
+      ],
+      capacidades: [
+        { value: 2, text: "2 competidores" },
+        { value: 4, text: "4 competidores" },
+        { value: 8, text: "8 competidores" },
+        { value: 16, text: "16 competidores" }
       ],
       campeonatos: [],
       campos: ["nome", "data", "lotacao"]
@@ -186,7 +200,7 @@ export default {
       let payload = {
         "id": this.camp_info.id,
         "nome": this.edit_info.titulo,
-        "data": this.edit_info.data.getTime() + 24 * 60 * 60,
+        "data": this.edit_info.data.getTime(),
         "capacidade": this.edit_info.capacidade,
         "estilo": this.edit_info.estilo,
         "comentarios": this.edit_info.comentarios,
@@ -212,7 +226,7 @@ export default {
         this.campeonatos = [];
         resposta.data.conteudo.forEach(camp => {
           let date = new Date(0);
-          date.setSeconds(camp.data);
+          date.setSeconds(camp.data + 24 * 60 * 60);
 
           this.campeonatos.push({
             "id": camp.id,
