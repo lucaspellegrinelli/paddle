@@ -285,3 +285,20 @@ def get_inscricoes():
 @app.route("/<path:path>")
 def catch_all(path):
     return render_template("index.html")
+
+@app.route("/api/estilos", methods=["GET"])
+def get_estilos():
+
+    result = db.session.query(
+        Estilo.id,
+        Estilo.nome.label("estilo"),
+    ).all()
+
+    def return_estilo(l):
+        return {
+            "id": l[0],
+            "estilo": l[1]
+        }
+
+    result = [return_estilo(l) for l in result]
+    return resposta_sucesso(result), 200

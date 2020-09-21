@@ -15,6 +15,7 @@
           <b-nav-item to="/ranking">Ranking</b-nav-item>
           <b-nav-item v-b-modal.modal-login  v-if="!this.$root.logado">Login</b-nav-item>
           <b-nav-item to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>
+          <b-nav-item to="/campeonato" v-if="this.$root.logado && this.$root.admin">Criar Campeonato</b-nav-item>          
           <b-nav-item-dropdown right v-if="this.$root.logado">
             <template v-slot:button-content>
               <b-icon icon="person-fill"></b-icon>

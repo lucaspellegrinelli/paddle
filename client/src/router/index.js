@@ -74,6 +74,11 @@ const routes = [
     component: () => import('../views/Perfil.vue')
   },
   {
+    path: '/campeonato',
+    name: 'Campeonato',
+    component: () => import('../views/Campeonato.vue')
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')
