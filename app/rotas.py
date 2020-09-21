@@ -224,14 +224,34 @@ def get_campeonatos():
 @app.route("/api/inscricao", methods=["POST"])
 @login_required
 def inscricao_campeonato():
-    print(request.get_json())
     id_camp = request.get_json().get('id_camp')
     id_atleta = request.get_json().get('id_atleta')
-    if id_atleta == current_user.id:
+    if id_atleta == current_user.id or current_user.admin:
         novo_participantes = Participantes(id_camp=id_camp, id_atleta=id_atleta, aprovado=0)
         db.session.add(novo_participantes)
         db.session.commit()
         return resposta_sucesso(None), 200
+    else:
+        return resposta_erro("Id de usuário inválido"), 400
+
+@app.route("/api/inscricoes", methods=["POST"])
+@login_required
+def get_inscricoes():
+    id_atleta = request.get_json().get('id_atleta')
+    if id_atleta == current_user.id or current_user.admin:
+
+        result = db.session.query(
+            Participantes.id,
+            Campeonato.id,
+            Participantes.aprovado
+        ).join(
+            Participantes,
+            Participantes.id_atleta == id_atleta
+        ).all()
+
+        print("SIHUASAUISHUISUAHSUISH", result)
+
+        return resposta_sucesso(result), 200
     else:
         return resposta_erro("Id de usuário inválido"), 400
 
