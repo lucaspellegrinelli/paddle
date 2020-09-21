@@ -65,14 +65,11 @@ export default {
         
         campos: ['nome'],
 
-        items1: [
-         'ana'],
+        items1: [],
 
-        items2:[
-          'pedro'],
+        items2:[],
 
-        items3:[
-          'jao']
+        items3:[]
     }
   },
 
@@ -80,8 +77,6 @@ export default {
     this.getPostsRecentes();
   
     this.getTodosAtletas();
-
-    this.sortedCandidates();
   },
   methods: {
     getPostsRecentes() {
@@ -102,14 +97,16 @@ export default {
       axios.get("/api/atletas")
       .then(resposta => {
         this.atletas = resposta.data.conteudo;
+        this.atletas.sort((a, b) => { return b.pontuacao - a.pontuacao});
+        this.items1 = [this.atletas[0]];
+        this.items2 = [this.atletas[1]];
+        this.items3 = [this.atletas[2]];
       })
       .catch(function(erro) {
         alert(erro);
       });
     },
-        sortedCandidates(){
-          return this.atletas.sort((a, b) => { return b.pontuacao - a.pontuacao;});
-    }
+
   }
 
 }
