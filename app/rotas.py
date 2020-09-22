@@ -222,6 +222,8 @@ def get_campeonatos():
         Participantes,
         Participantes.id_camp == Campeonato.id,
         isouter=True
+    ).filter(
+        Participantes.aprovado == 1
     ).group_by(Campeonato.id).all()
 
     def line_to_dict(l):

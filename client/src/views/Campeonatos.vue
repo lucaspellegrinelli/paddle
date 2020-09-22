@@ -241,6 +241,7 @@ export default {
     },
     fechar_inscricoes() {
       this.$refs['gerenciar-inscricoes-modal'].hide();
+      this.$refs['campeonato-edit-modal'].show();
     },
     salvar_inscricoes() {
       this.$refs['gerenciar-inscricoes-modal'].hide();
