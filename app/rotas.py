@@ -3,8 +3,7 @@ from sqlalchemy import func
 from flask import render_template, request, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
 from validate_email import validate_email
-from app.usuario import Usuario
-from app.usuario import Atleta
+from app.usuario import Usuario, Atleta, Categoria
 from app.campeonato import Campeonato, Participantes, Estilo
 from app.post import Post
 from app import db
@@ -65,10 +64,10 @@ def cadastro():
     if senha is None or len(senha) < 8:
         return resposta_erro("Formulário inválido: senha inválida"), 400
 
-    admin = form.get("admin")
+    admin = form.get("admin") == True
 
     usuario = Usuario(nome_usuario=nome_usuario, email=email, admin=admin)
-    usuario.atualizar_senha(senha)    
+    usuario.atualizar_senha(senha)
     db.session.add(usuario)
     db.session.commit()
     
@@ -80,7 +79,12 @@ def cadastro():
         nascimento_str = dados_atleta.get("nascimento")
         nascimento = datetime.datetime.strptime(nascimento_str, "%Y-%m-%d").date()
         federado = dados_atleta.get("federado")
-        atleta = Atleta(id=id_usuario, nome=nome, nascimento=nascimento, federado=federado)
+        sexo = dados_atleta.get("sexo")
+        categoria = dados_atleta.get("categoria")
+        print(categoria)
+
+        atleta = Atleta(id=id_usuario, nome=nome, nascimento=nascimento, federado=federado,
+                        sexo=sexo, categoria=categoria)
         db.session.add(atleta)
         db.session.commit()
 
@@ -163,6 +167,14 @@ def editar_post(id):
     db.session.commit()
     return resposta_sucesso(None), 200 
 
+@app.route("/api/categorias", methods=["GET"])
+def get_categorias():
+    categorias = Categoria.query.all()
+    resultado = []
+    for c in categorias:
+        resultado.append({ "text": c.nome, "value": c.id })
+    return resposta_sucesso(resultado), 200
+
 @app.route("/api/atletas", methods=["GET"])
 def get_atletas():
     atletas = []
@@ -196,11 +208,7 @@ def get_campeonatos():
         Participantes,
         Participantes.id_camp == Campeonato.id,
         isouter=True
-    ).join(
-        Atleta,
-        Participantes.id_atleta == Atleta.id,
-        isouter=True
-    ).all()
+    ).group_by(Campeonato.id).all()
 
     def line_to_dict(l):
         d = datetime.datetime.strptime(str(l[2]), '%Y-%m-%d')
@@ -315,3 +323,22 @@ def get_estilos():
 
     result = [return_estilo(l) for l in result]
     return resposta_sucesso(result), 200
+
+
+@app.route("/api/criar_camp", methods=["POST"])
+@login_required
+@requer_admin
+def criar_camp():
+
+    form = request.json
+    print (form)
+    nome = form.get("nome")
+    data = datetime.datetime.fromtimestamp(form.get("data") / 1000.0)
+    capacidade = form.get("capacidade")
+    estilo = form.get("estilo")
+    comentarios = form.get("comentarios")
+
+    campeonato = Campeonato(nome=nome, data=data, capacidade=capacidade, estilo=estilo, comentarios=comentarios)   
+    db.session.add(campeonato)
+    db.session.commit()
+    return resposta_sucesso(None), 200
