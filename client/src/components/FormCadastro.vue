@@ -250,11 +250,10 @@ export default {
         delete payload.dados_atleta;
       }
 
-      alert(JSON.stringify(payload));
       axios
         .post("/api/cadastro", payload)
         .then(resposta => {
-          alert(JSON.stringify(resposta));
+          alert("Sucesso!");
         })
         .catch(erro => {
           alert(erro);

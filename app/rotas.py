@@ -96,8 +96,22 @@ def cadastro():
 def dados_perfil():
     dados = {
         "id": current_user.id,
-        "usuario": current_user.nome_usuario
+        "usuario": current_user.nome_usuario,
+        "email": current_user.email
     }
+
+    atleta = Atleta.query.filter_by(id=current_user.id).first()
+    if atleta is not None:
+        categoria = Categoria.query.filter_by(id=atleta.categoria).first()
+        dados["dados_atleta"] = {
+            "nome": atleta.nome,
+            "nascimento": atleta.nascimento.strftime("%d/%m/%Y"),
+            "federado": atleta.federado,
+            "pontuacao": atleta.pontuacao,
+            "sexo": atleta.sexo,
+            "categoria": categoria.nome,
+        }
+
     return resposta_sucesso(dados), 200
 
 @app.route("/api/logout", methods=["POST"])

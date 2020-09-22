@@ -21,7 +21,7 @@
               <b-icon icon="person-fill"></b-icon>
             </template>
             <b-dropdown-item to="/perfil">Perfil</b-dropdown-item>
-            <b-dropdown-item to="/">Sair</b-dropdown-item>
+            <b-dropdown-item v-on:click="logout">Sair</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -34,10 +34,25 @@
 
 <script>
 import FormLogin from "@/components/FormLogin.vue";
+const axios = require("axios");
 
 export default {
   name: "Navbar",
-  components: { FormLogin }
+  components: { FormLogin },
+  methods: {
+    logout() {
+      axios
+        .post("/api/logout")
+        .then(_resposta => {
+          this.$root.logado = false;
+          this.$root.admin = false;
+          this.$router.push("/");
+        })
+        .catch(erro => {
+          alert(erro);
+        });
+    }
+  }
 };
 </script>
 
