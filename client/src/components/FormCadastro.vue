@@ -109,6 +109,37 @@
       <b-form-group id="input-group-atleta-federado">
         <b-form-checkbox v-model="form.dados_atleta.federado">Este atleta é federado</b-form-checkbox>
       </b-form-group>
+
+      <b-form-group
+        id="input-group-atleta-categoria"
+        label="Categoria:"
+        label-for="input-atleta-categoria"
+        invalid-feedback="Selecione uma categoria"
+      >
+        <b-form-select
+          id="input-atleta-categoria"
+          v-model="form.dados_atleta.categoria"
+          :options="categorias_atleta"
+          :state="validar('dados_atleta.categoria')"
+        ></b-form-select>
+      </b-form-group>
+
+      <b-form-group
+        id="input-group-atleta-sexo"
+        label="Sexo:"
+        label-for="input-atleta-sexo"
+        invalid-feedback="Selecione uma opção"
+      >
+        <b-form-radio-group 
+          id="input-atleta-sexo"
+          v-model="form.dados_atleta.sexo"
+          :state="validar('dados_atleta.sexo')"
+        >
+          <b-form-radio value="M">Masculino</b-form-radio>
+          <b-form-radio value="F">Feminino</b-form-radio>
+        </b-form-radio-group>
+      </b-form-group>
+
     </b-form-group>
 
     <b-button type="submit" variant="primary">Enviar</b-button>&nbsp;
@@ -141,10 +172,13 @@ export default {
           atleta: false,
           nome: "",
           nascimento: "",
-          federado: false
+          federado: false,
+          categoria: null,
+          sexo: ""
         }
       },
-      show: true
+      show: true,
+      categorias_atleta: [{ text: "Carregando categorias...", value: null, disabled: true }],
     };
   },
   validations: {
@@ -172,9 +206,25 @@ export default {
         },
         nascimento: {
           required: requiredIf("atleta")
+        },
+        categoria: {
+          required: requiredIf("atleta")
+        },
+        sexo: {
+          required: requiredIf("atleta")
         }
       }
     }
+  },
+  beforeMount() {
+    axios
+      .get("/api/categorias")
+      .then(resposta => {
+        this.categorias_atleta = resposta.data.conteudo;
+      })
+      .catch(erro => {
+        alert(erro);
+      });  
   },
   methods: {
     validar(nome) {
@@ -221,7 +271,9 @@ export default {
           atleta: false,
           nome: "",
           nascimento: "",
-          federado: false
+          federado: false,
+          categoria: null,
+          sexo: ""
         }
       };
       this.$nextTick(() => {
