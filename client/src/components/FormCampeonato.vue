@@ -8,6 +8,7 @@
     >
     <b-form-input
         id="input-nome"
+        v-model="form.nome"
         placeholder="Nome"
       ></b-form-input>
     </b-form-group>
@@ -20,7 +21,9 @@
      >
       <b-form-datepicker
          id="input-data"
+         v-model="form.data"
          placeholder="Escolha uma data"
+         value-as-date
        ></b-form-datepicker>
      </b-form-group>
 
@@ -63,17 +66,18 @@
       ></b-form-input>
     </b-form-group>
 
-    <b-button type="submit" variant="primary">Enviar</b-button>&nbsp;
-    <b-button type="reset" variant="danger">Reset</b-button>
+    <b-button variant="primary" @click="salvar">Salvar</b-button>&nbsp;
+    <b-alert show variant="primary" v-model="salvo">Campeonato salvo</b-alert>
     
   </b-form>
 </template>
 
 <script>
-import {
-  required,
-  minLength
-} from "vuelidate/lib/validators";
+// import {
+//   required,
+//   minLength
+// } from "vuelidate/lib/validators";
+
 const axios = require("axios");
 
 export default {
@@ -81,7 +85,7 @@ export default {
   data() {
     return {
       form: {
-        campeonato: "",
+        nome: "",
         data: "",
         capacidade: null,
         optionsc: [
@@ -92,28 +96,26 @@ export default {
         ],
         estilo: null,
         optionse: [
-          { value: '2', text: '2 competidores' },
+          { value: '0', text: 'Grupos' },
+          { value: '1', text: 'Mata-mata' },
         ],        
-        comentarios: ""
+        comentarios: "",
       },
+      salvo: false,
       show: true
     };
   },
-  validations: {
-    form: {
-      nome: {
-        required,
-        minLength: minLength(1)
-      },
-      data: {
-        required: ("data")
-      }
-    }
-  },
-
-  created(){
-    this.getEstilo();
-  },
+  // validations: {
+  //   form: {
+  //     nome: {
+  //       required,
+  //       minLength: minLength(1)
+  //     },
+  //     data: {
+  //       required: ("data")
+  //     }
+  //   }
+  // },
 
   methods: {
     validar(nome) {
@@ -122,59 +124,25 @@ export default {
       const { $dirty, $error } = prop;
       return $dirty ? !$error : null;
     },
-    getEstilo() {
-      axios.get("/api/estilos").then(response => {
-        this.estilos = response.data.conteudo;
-        for(let i = 0; i < this.estilos.length; i++){
-          this.estilos[i].value = this.estilos[i].id;
-          this.estilos[i].text = this.estilos[i].estilo;
-          delete this.estilos[i].id;
-          delete this.estilos[i].estilo;
-        }
-        this.optionse = this.estilos;            
-      })       
-      .catch(function(error) {
-        alert(error);
-      });
-    },
-    // onSubmit() {
-    //   this.$v.form.$touch();
-    //   if (this.$v.form.$anyError) {
-    //     return;
-    //   }
+    salvar() {
+      var payload = {};
 
-    //   const payload = { ...this.form };
-
-    //   alert(JSON.stringify(payload));
-    //   axios
-    //     .post("/api/campeonato", payload)
-    //     .then(resposta => {
-    //       alert(JSON.stringify(resposta));
-    //     })
-    //     .catch(erro => {
-    //       alert(erro);
-    //     });
-    // },
-    // onReset() {
-    //   this.form = {
-    //     nome: "",
-    //     data: "",
-    //     capacidade: null,
-    //     optionsc: [
-    //       { value: '0', text: 'Escolha uma opção' },
-    //       { value: '2', text: '2 competidores' },
-    //       { value: '4', text: '4 competidores' },
-    //       { value: '8', text: '8 competidores' },
-    //       { value: '16', text: '16 competidores'}
-    //     ],
-    //     estilo: null,
-    //     optionse:
-    //     comentarios: ""
-    //     };
-    //   this.$nextTick(() => {
-    //     this.$v.$reset();
-    //   });
-    // }
+      payload.nome = this.form.nome;
+      payload.data = this.form.data.getTime();
+      payload.capacidade = this.form.capacidade;
+      payload.estilo = this.form.estilo;
+      payload.comentarios = this.form.comentarios;
+      
+      var ctx = this;
+      axios 
+        .post("/api/criar_camp", payload)
+        .then(_ => {
+          ctx.salvo = true;
+        })
+        .catch(erro => {
+          alert(erro);
+        });
+    }
   }
 };
 </script>
