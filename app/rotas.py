@@ -327,3 +327,22 @@ def get_estilos():
 
     result = [return_estilo(l) for l in result]
     return resposta_sucesso(result), 200
+
+
+@app.route("/api/criar_camp", methods=["POST"])
+@login_required
+@requer_admin
+def criar_camp():
+
+    form = request.json
+    print (form)
+    nome = form.get("nome")
+    data = datetime.datetime.fromtimestamp(form.get("data") / 1000.0)
+    capacidade = form.get("capacidade")
+    estilo = form.get("estilo")
+    comentarios = form.get("comentarios")
+
+    campeonato = Campeonato(nome=nome, data=data, capacidade=capacidade, estilo=estilo, comentarios=comentarios)   
+    db.session.add(campeonato)
+    db.session.commit()
+    return resposta_sucesso(None), 200
