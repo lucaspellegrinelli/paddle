@@ -251,7 +251,7 @@ export default {
       }
 
       axios.post("/api/aprovar_participantes", payload).then(() => {
-        
+        this.getTodosCampeonatos();
       });
     },
     gerenciar_camp() {

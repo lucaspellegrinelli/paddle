@@ -220,7 +220,7 @@ def get_campeonatos():
         func.count(Participantes.id)
     ).join(
         Participantes,
-        Participantes.id_camp == Campeonato.id,
+        (Participantes.id_camp == Campeonato.id) & (Participantes.aprovado == 1),
         isouter=True
     ).group_by(Campeonato.id).all()
 
