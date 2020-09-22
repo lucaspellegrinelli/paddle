@@ -208,11 +208,7 @@ def get_campeonatos():
         Participantes,
         Participantes.id_camp == Campeonato.id,
         isouter=True
-    ).join(
-        Atleta,
-        Participantes.id_atleta == Atleta.id,
-        isouter=True
-    ).all()
+    ).group_by(Campeonato.id).all()
 
     def line_to_dict(l):
         d = datetime.datetime.strptime(str(l[2]), '%Y-%m-%d')
