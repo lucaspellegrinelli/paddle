@@ -239,7 +239,6 @@ def get_campeonatos():
         }
 
     result = [line_to_dict(l) for l in result]
-    print(result)
     return resposta_sucesso(result), 200
 
 @app.route("/api/atualizar_campeonato", methods=["POST"])
@@ -254,6 +253,42 @@ def atualizar_campeonatos():
     camp.estilo = request.get_json().get('estilo')
     camp.comentarios = request.get_json().get('comentarios')
     db.session.commit()
+    return resposta_sucesso(None), 200
+
+@app.route("/api/participantes", methods=["POST"])
+def get_participantes():
+    id_camp = request.get_json().get('id_camp')
+
+    result = db.session.query(
+        Participantes.id_atleta,
+        Atleta.nome,
+        Participantes.aprovado
+    ).join(
+        Atleta,
+        Participantes.id_atleta == Atleta.id
+    ).filter(
+        Participantes.id_camp == id_camp
+    ).all()
+
+    def line_to_dict(l):
+        return {
+            "id_atleta": l[0],
+            "nome_atleta": l[1],
+            "aprovado": l[2]
+        }
+
+    result = [line_to_dict(l) for l in result]
+    return resposta_sucesso(result), 200
+
+@app.route("/api/aprovar_participantes", methods=["POST"])
+def aprovar_participantes():
+    ids = request.get_json().get('ids')
+
+    for i in ids:
+        part = db.session.query(Participantes).filter(Participantes.id_atleta == i).first()
+        part.aprovado = 1
+        db.session.commit()
+
     return resposta_sucesso(None), 200
 
 @app.route("/api/inscricao", methods=["POST"])

@@ -252,7 +252,7 @@ export default {
 
       axios
         .post("/api/cadastro", payload)
-        .then(resposta => {
+        .then(() => {
           alert("Sucesso!");
         })
         .catch(erro => {

@@ -90,10 +90,30 @@
             <b-button class="mt-3" variant="outline-danger" block @click="close_editar">Fechar</b-button>
           </b-col>
           <b-col>
+            <b-button class="mt-3" variant="outline-secondary" block @click="inscricoes_editar">Inscrições</b-button>
+          </b-col>
+          <b-col>
             <b-button class="mt-3" variant="outline-success" block @click="submit_editar">Salvar</b-button>
           </b-col>
         </b-row>
       </b-form>
+    </b-modal>
+
+    <b-modal hide-footer size="md" ref="gerenciar-inscricoes-modal" title="Gerenciar inscrições">
+      <b-form-checkbox-group
+        v-model="selected_subscriptions"
+        :options="pending_subscriptions"
+        stacked
+      ></b-form-checkbox-group>
+
+      <b-row>
+        <b-col>
+          <b-button class="mt-3" variant="outline-danger" block @click="fechar_inscricoes">Fechar</b-button>
+        </b-col>
+        <b-col>
+          <b-button class="mt-3" variant="outline-success" block @click="salvar_inscricoes">Aprovar</b-button>
+        </b-col>
+      </b-row>
     </b-modal>
   </div>
 </template>
@@ -122,6 +142,8 @@ export default {
         estilo: 0,
         comentarios: ""
       },
+      selected_subscriptions: [],
+      pending_subscriptions: [],
       estilos: [
         { value: 1, text: "Mata-Mata" },
         { value: 2, text: "Grupos" },
@@ -162,6 +184,8 @@ export default {
           return;
         }
       });
+
+      this.getParticipantes(info["id"]);
     },
     fechar_model(){
       this.$refs['campeonato-info-modal'].hide();
@@ -211,6 +235,24 @@ export default {
         this.getTodosCampeonatos();
       });
     },
+    inscricoes_editar() {
+      this.$refs['campeonato-edit-modal'].hide();
+      this.$refs['gerenciar-inscricoes-modal'].show();
+    },
+    fechar_inscricoes() {
+      this.$refs['gerenciar-inscricoes-modal'].hide();
+    },
+    salvar_inscricoes() {
+      this.$refs['gerenciar-inscricoes-modal'].hide();
+
+      let payload = {
+        "ids": this.selected_subscriptions
+      }
+
+      axios.post("/api/aprovar_participantes", payload).then(() => {
+        
+      });
+    },
     gerenciar_camp() {
       this.$refs['campeonato-info-modal'].hide();
       this.$refs['campeonato-edit-modal'].show();
@@ -220,6 +262,23 @@ export default {
       this.edit_info.capacidade = this.camp_info.capacidade;
       this.edit_info.estilo = this.camp_info.estilo;
       this.edit_info.comentarios = this.camp_info.comentarios;
+    },
+    getParticipantes(id_camp){
+      let payload = {
+        "id_camp": id_camp
+      };
+
+      axios.post("/api/participantes", payload).then(response => {
+        this.pending_subscriptions = [];
+        response.data.conteudo.forEach(item => {
+          if(item.aprovado == 0){
+            this.pending_subscriptions.push({
+              value: item.id_atleta,
+              text: item.nome_atleta
+            });
+          }
+        });
+      });
     },
     getTodosCampeonatos() {
       axios.get("/api/campeonatos").then(resposta => {
