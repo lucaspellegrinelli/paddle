@@ -21,7 +21,7 @@
       <p>Participantes: {{ camp_info.participantes }} / {{ camp_info.capacidade }}</p>
       <p>Estilo: {{ camp_info.estilo }}</p>
       <p>Comentários: {{ camp_info.comentarios }}</p>
-      <p v-if="camp_info.inscrito">Status inscrição: {{ camp_info.inscr_aprovada ? "Aprovada" : "Em espera" }}</p>
+      <p v-if="camp_info.inscrito">Status inscrição: {{ camp_info.inscr_aprovada ? "Aprovada" : "Aprovação pendente" }}</p>
 
       <b-row>
         <b-col v-if="this.$root.logado && this.$root.admin">
@@ -30,13 +30,70 @@
         <b-col>
           <b-button class="mt-3" variant="outline-secondary" block @click="visualizar_camp">Visualizar</b-button>
         </b-col>
-        <b-col v-if="this.$root.logado && camp_info['participantes'] < camp_info['capacidade']">
+        <b-col v-if="this.$root.logado && camp_info.participantes < camp_info.capacidade">
           <b-button class="mt-3" variant="outline-success" block @click="inscrever_camp">{{ camp_info.inscrito ? "Desinscrever-se" : "Inscrever-se" }}</b-button>
         </b-col>
         <b-col>
           <b-button class="mt-3" variant="outline-danger" block @click="fechar_model">Fechar</b-button>
         </b-col>
       </b-row>
+    </b-modal>
+
+    <b-modal hide-footer size="md" ref="campeonato-edit-modal" title="Editar campeonato">
+      <b-form>
+        <b-form-group label="Nome do campeonato:">
+          <b-form-input
+            ref="edit-nome-camp"
+            v-model="edit_info.titulo"
+            type="text"
+            placeholder="Digite um título"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group label="Data:">
+          <b-form-datepicker
+            ref="edit-data-camp"
+            v-model="edit_info.data"
+            class="mb-2"
+            value-as-date
+          ></b-form-datepicker>
+        </b-form-group>
+
+        <b-form-group label="Capacidade:">
+          <b-form-select
+            ref="edit-estilo-camp"
+            v-model="edit_info.capacidade"
+            :options="capacidades"
+          ></b-form-select>
+        </b-form-group>
+
+        <b-form-group label="Estilo:">
+          <b-form-select
+            ref="edit-estilo-camp"
+            v-model="edit_info.estilo"
+            :options="estilos"
+          ></b-form-select>
+        </b-form-group>
+
+        <b-form-group label="Comentários:">
+          <b-form-textarea
+            ref="edit-comentario-camp"
+            v-model="edit_info.comentarios"
+            placeholder="Digite algum comentário..."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </b-form-group>
+
+        <b-row>
+          <b-col>
+            <b-button class="mt-3" variant="outline-danger" block @click="close_editar">Fechar</b-button>
+          </b-col>
+          <b-col>
+            <b-button class="mt-3" variant="outline-success" block @click="submit_editar">Salvar</b-button>
+          </b-col>
+        </b-row>
+      </b-form>
     </b-modal>
   </div>
 </template>
@@ -52,19 +109,36 @@ export default {
         titulo: "",
         data: "",
         capacidade: 0,
-        estilo: "",
+        estilo: 0,
         comentarios: "",
         participantes: 0,
         inscrito: false,
         inscr_aprovada: false
       },
+      edit_info: {
+        titulo: "",
+        data: "",
+        capacidade: 0,
+        estilo: 0,
+        comentarios: ""
+      },
+      estilos: [
+        { value: 1, text: "Mata-Mata" },
+        { value: 2, text: "Grupos" },
+      ],
+      capacidades: [
+        { value: 2, text: "2 competidores" },
+        { value: 4, text: "4 competidores" },
+        { value: 8, text: "8 competidores" },
+        { value: 16, text: "16 competidores" }
+      ],
       campeonatos: [],
-      campos: ["nome", "data"]
+      campos: ["nome", "data", "lotacao"]
     }
   },
   created() {
-    this.getTodosCampeonatos();
     this.getInscricoes();
+    this.getTodosCampeonatos();
   },
   methods: {
     row_click_handler(_, index){
@@ -118,28 +192,51 @@ export default {
         }
       });
     },
-    getTodosCampeonatos() {
-      axios.get("/api/campeonatos")
-      .then(resposta => {
-        let format_date = function(date){
-          let day = date.getDate().toString().padStart(2, '0');
-          let month = (date.getMonth() + 1).toString().padStart(2, '0');
-          let year = date.getFullYear();
-          return day + "/" + month + "/" + year;
-        }
+    close_editar() {
+      this.$refs['campeonato-edit-modal'].hide();
+      this.$refs['campeonato-info-modal'].show();
+    },
+    submit_editar() {
+      let payload = {
+        "id": this.camp_info.id,
+        "nome": this.edit_info.titulo,
+        "data": this.edit_info.data.getTime(),
+        "capacidade": this.edit_info.capacidade,
+        "estilo": this.edit_info.estilo,
+        "comentarios": this.edit_info.comentarios,
+      }
 
+      axios.post("/api/atualizar_campeonato", payload).then(() => {
+        this.$refs['campeonato-edit-modal'].hide();
+        this.getTodosCampeonatos();
+      });
+    },
+    gerenciar_camp() {
+      this.$refs['campeonato-info-modal'].hide();
+      this.$refs['campeonato-edit-modal'].show();
+
+      this.edit_info.titulo = this.camp_info.titulo;
+      this.edit_info.data = this.camp_info.data;
+      this.edit_info.capacidade = this.camp_info.capacidade;
+      this.edit_info.estilo = this.camp_info.estilo;
+      this.edit_info.comentarios = this.camp_info.comentarios;
+    },
+    getTodosCampeonatos() {
+      axios.get("/api/campeonatos").then(resposta => {
         this.campeonatos = [];
         resposta.data.conteudo.forEach(camp => {
-          let formatted_date = format_date(new Date(camp.data));
+          let date = new Date(0);
+          date.setSeconds(camp.data + 24 * 60 * 60);
 
           this.campeonatos.push({
             "id": camp.id,
             "nome": camp.nome,
-            "data": formatted_date,
+            "data": date,
             "capacidade": camp.capacidade,
             "estilo": camp.estilo,
             "comentarios": camp.comentarios,
-            "participantes": camp.participantes
+            "participantes": camp.participantes,
+            "lotacao": camp.participantes + "/" + camp.capacidade
           });
         });
       })
@@ -154,7 +251,13 @@ export default {
           this.inscricoes = response.data.conteudo;
         });
       });
-    }
+    },
+    // format_date(date){
+    //   let day = date.getDate().toString().padStart(2, '0');
+    //   let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    //   let year = date.getFullYear();
+    //   return day + "/" + month + "/" + year;
+    // }
   }
 }
 </script>
