@@ -302,6 +302,11 @@ export default {
             "lotacao": camp.participantes + "/" + camp.capacidade
           });
         });
+
+        this.campeonatos.sort(function(a, b){
+          if(a.data.getTime() == b.data.getTime()) return 0;
+          return a.data.getTime() > b.data.getTime() ? 1 : -1;
+        });
       })
       .catch(function(erro) {
         alert(erro);

@@ -85,7 +85,7 @@ def cadastro():
         print(categoria)
 
         atleta = Atleta(id=id_usuario, nome=nome, nascimento=nascimento, federado=federado,
-                        sexo=sexo, categoria=categoria)
+                        sexo=sexo, categoria=categoria, pontuacao=0)
         db.session.add(atleta)
         db.session.commit()
 
@@ -396,12 +396,10 @@ def criar_camp():
     db.session.commit()
     return resposta_sucesso(None), 200
 
-@app.route("/api/classificacao_camp", methods=["GET"])
+@app.route("/api/classificacao_camp/<id>", methods=["GET"])
 
-def get_classificacao():
-
-    id_camp = request.get_json().get('id_camp')
-    id_camp = str(id_camp)
+def get_classificacao(id):
+    id_camp = str(id)
   
     sql_query = sqlalchemy.text("SELECT atleta.nome, COUNT(partida.id) AS vitorias\
                                 FROM participantes\
