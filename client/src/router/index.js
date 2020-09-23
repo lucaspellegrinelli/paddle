@@ -79,6 +79,11 @@ const routes = [
     component: () => import('../views/Campeonato.vue')
   },
   {
+    path: '/visualizarcampeonato',
+    name: 'VisualizarCamp',
+    component: () => import('../views/VisualizarCamp.vue')
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')

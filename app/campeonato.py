@@ -42,3 +42,17 @@ class Participantes(db.Model):
 	id_camp = db.Column(db.Integer)
 	id_atleta = db.Column(db.Integer)
 	aprovado = db.Column(db.Integer)
+
+@dataclass
+class Partidas(db.Model):
+	id: int
+	id_atleta1: int
+	id_atleta2: int
+	id_camp: int
+	resultado: int
+
+	id = db.Column(db.Integer, primary_key=True)
+	id_atleta1 = db.Column(db.Integer)
+	id_atleta2 = db.Column(db.Integer)
+	id_camp = db.Column(db.Integer)
+	resultado = db.Column(db.Integer)

@@ -4,12 +4,13 @@ from flask import render_template, request, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
 from validate_email import validate_email
 from app.usuario import Usuario, Atleta, Categoria
-from app.campeonato import Campeonato, Participantes, Estilo
+from app.campeonato import Campeonato, Participantes, Estilo, Partidas
 from app.post import Post
 from app import db
 import json
 import datetime
 import functools
+import sqlalchemy
 from sqlalchemy.sql import text
 
 def resposta_sucesso(conteudo):
@@ -391,3 +392,27 @@ def criar_camp():
     db.session.add(campeonato)
     db.session.commit()
     return resposta_sucesso(None), 200
+
+@app.route("/api/classificacao_camp", methods=["POST"])
+
+def get_classificacao():
+
+    id_camp = request.get_json().get('id_camp')
+    id_camp = str(id_camp)
+  
+    sql_query = sqlalchemy.text("SELECT atleta.nome, COUNT(partida.id) AS vitorias\
+                                FROM participantes\
+                                LEFT JOIN partida ON\
+                                ((partida.id_atleta1 = participantes.id_atleta AND partida.resultado = 1)\
+                                OR (partida.id_atleta2 = participantes.id_atleta AND partida.resultado = -1))\
+                                AND partida.id_camp = participantes.id_camp\
+                                INNER JOIN atleta ON participantes.id_atleta = atleta.id\
+                                WHERE participantes.id_camp =" + id_camp + "\
+                                GROUP BY participantes.id_atleta")
+
+    result = db.session.execute(sql_query)
+    result_as_list = result.fetchall()
+    result_as_list = [dict(row) for row in result_as_list]
+    
+    print(result_as_list)
+    return resposta_sucesso(result_as_list), 200
