@@ -60,14 +60,17 @@ export default {
   data() {
     return {
       atletas: [],
-      campos: ['nome', 'nascimento', 'federado'],
+      categorias: [{ text: "Carregando categorias...", value: null, disabled: true }],
+      campos: ['nome', 'sexo', 'categoria', 'federado'],
       ordenar_por: 'Nome',
       ordem_decresc: false,
       pagina_atual: 1,
       por_pagina: 10,
       filtros: {
           nome: null,
-          federado: null
+          federado: null,
+          sexo: null,
+          categoria: null
       },
       show_filtros: false
     }
@@ -81,6 +84,12 @@ export default {
       if (this.filtros.federado) {
          atletas = atletas.filter((a) => a.federado == true);
       }
+      if (this.filtros.sexo) {
+         atletas = atletas.filter((a) => a.sexo == this.filtros.sexo);
+      }
+      if (this.filtros.categoria) {
+         atletas = atletas.filter((a) => a.categoria == this.filtros.categoria);
+      }
       if (this.filtros.nome){
          atletas = atletas.filter((a) => a.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(this.filtros.nome));
       }
@@ -89,6 +98,7 @@ export default {
   },
   created() {
     this.getTodosAtletas();
+    this.getCategorias();
   },
   watch: {
       filtros: {
@@ -116,6 +126,17 @@ export default {
       .catch(function(erro) {
         alert(erro);
       });
+    },
+    getCategorias() {
+      axios
+        .get("/api/categorias")
+        .then(resposta => {
+          var cats = resposta.data.conteudo;
+          this.categorias = cats.map((cat_json) => cat_json.text)
+        })
+        .catch(erro => {
+          alert(erro);
+        });  
     }
   }
 }

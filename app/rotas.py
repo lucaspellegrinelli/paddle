@@ -206,7 +206,10 @@ def get_atletas():
         atletas = Atleta.query.filter(Atleta.nome.like(f"%{nome}%")).filter(*filtros).all()
     else:    
         atletas = Atleta.query.filter(*filtros).all()
-
+    categorias = Categoria.query.filter().all()
+    categorias = {row.id : row.nome for row in categorias}
+    for atleta in atletas:
+        atleta.categoria = categorias[atleta.categoria]
     return resposta_sucesso(atletas), 200
     
 @app.route("/api/campeonatos", methods=["GET"])

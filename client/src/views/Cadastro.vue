@@ -1,6 +1,6 @@
 <template>
   <div class="cadastro">
-    <h1>Formulário de cadastro (WIP)</h1>
+    <h1>Formulário de cadastro</h1>
     <div class="row justify-content-center">
       <div class="col-4 text-left">
         <FormCadastro />
@@ -26,5 +26,6 @@ export default {
 <style lang="scss">
 .cadastro {
   padding-top: 30px;
+  padding-bottom: 30px;
 }
 </style>
