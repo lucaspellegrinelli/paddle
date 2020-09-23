@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <h3>Formulário de login (WIP)</h3>
+    <h3> Login </h3>
     <div class="row justify-content-center mt-3">
       <div class="col-2 text-left">
         <FormLogin />

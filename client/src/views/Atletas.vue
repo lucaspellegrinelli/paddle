@@ -143,9 +143,6 @@ export default {
 </script>
 
 <style lang="scss">
-.atletas {
-  padding-top: 30px;
-}
 
 .tabela {
   margin-top: 30px;

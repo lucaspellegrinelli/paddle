@@ -396,7 +396,7 @@ def criar_camp():
     db.session.commit()
     return resposta_sucesso(None), 200
 
-@app.route("/api/classificacao_camp", methods=["POST"])
+@app.route("/api/classificacao_camp", methods=["GET"])
 
 def get_classificacao():
 

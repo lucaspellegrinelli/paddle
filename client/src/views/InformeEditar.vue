@@ -3,8 +3,7 @@
     <b-container>
       <div class="row justify-content-center">
         <div class="col-9 p-4">
-          <h3> Teste: Editar informe </h3>
-          <h3> Futuramente rota protegida </h3>
+          <h3> Editar informe </h3>
           <FormInforme :post_edicao="this.post"/>
         </div>
       </div>
