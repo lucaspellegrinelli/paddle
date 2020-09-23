@@ -19,7 +19,7 @@
     <b-modal hide-footer size="lg" ref="campeonato-info-modal" v-bind:title="camp_info.titulo">
       <p>Data: {{ camp_info.data }}</p>
       <p>Participantes: {{ camp_info.participantes }} / {{ camp_info.capacidade }}</p>
-      <p>Estilo: {{ camp_info.estilo }}</p>
+      <p>Estilo: {{ camp_info.estilo == 1 ? "Mata-Mata" : "Grupos" }}</p>
       <p>Comentários: {{ camp_info.comentarios }}</p>
       <p v-if="camp_info.inscrito">Status inscrição: {{ camp_info.inscr_aprovada ? "Aprovada" : "Aprovação pendente" }}</p>
 
