@@ -84,6 +84,11 @@ const routes = [
     component: () => import('../views/VisualizarCamp.vue')
   },
   {
+    path: '/partida',
+    name: 'Vpartida',
+    component: () => import('../components/FormPartida.vue')
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')
