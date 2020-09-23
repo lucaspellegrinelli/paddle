@@ -64,7 +64,8 @@ export default {
   data() {
     return {
       atletas: [],
-      campos: [{key: 'index', label:"Classificação"}, 'nome', 'nascimento', 'federado', {key: 'pontuacao', label:"Pontuação"}],
+      categorias: [{ text: "Carregando categorias...", value: null, disabled: true }],
+      campos: [{key: 'index', label:"Classificação"}, 'nome', 'sexo', 'categoria', 'federado', {key: 'pontuacao', label:"Pontuação"}],
 
       ordenar_por: 'pontuacao',
       ordem_decresc: true,
@@ -72,7 +73,9 @@ export default {
       por_pagina: 10,
       filtros: {
           nome: null,
-          federado: null
+          federado: null,
+          sexo: null,
+          categoria: null
       },
       show_filtros: false
     }
@@ -89,11 +92,18 @@ export default {
       if (this.filtros.nome){
          atletas = atletas.filter((a) => a.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(this.filtros.nome));
       }
+      if (this.filtros.sexo) {
+         atletas = atletas.filter((a) => a.sexo == this.filtros.sexo);
+      }
+      if (this.filtros.categoria) {
+         atletas = atletas.filter((a) => a.categoria == this.filtros.categoria);
+      }
       return atletas;
     }
   },
   created() {
     this.getTodosAtletas();
+    this.getCategorias();
   },
   watch: {
       filtros: {
@@ -121,7 +131,18 @@ export default {
       .catch(function(erro) {
         alert(erro);
       });
-    }
+    },
+    getCategorias() {
+      axios
+        .get("/api/categorias")
+        .then(resposta => {
+          var cats = resposta.data.conteudo;
+          this.categorias = cats.map((cat_json) => cat_json.text)
+        })
+        .catch(erro => {
+          alert(erro);
+        });
+    }      
   }
 }
 </script>
