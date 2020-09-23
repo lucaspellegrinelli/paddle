@@ -84,8 +84,8 @@ const routes = [
     component: () => import('../views/VisualizarCamp.vue')
   },
   {
-    path: '/partida',
-    name: 'Vpartida',
+    path: '/partidas',
+    name: 'Partida',
     component: () => import('../components/FormPartida.vue')
   },
   {
