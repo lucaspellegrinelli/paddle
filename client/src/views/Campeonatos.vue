@@ -218,7 +218,7 @@ export default {
     },
     visualizar_camp(){
       window.location.href = "/visualizarcampeonato&id" = this.camp_info.id;
-    }
+    },
     close_editar() {
       this.$refs['campeonato-edit-modal'].hide();
       this.$refs['campeonato-info-modal'].show();
