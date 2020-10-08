@@ -14,45 +14,43 @@ jest.mock("axios", () => ({
   }))
 
 describe('Testa InformesLista.vue', () => {
-    
-  it('Testa lista de posts', () => {
-    var wrapper = shallowMount(InformesLista);
+  let wrapper;  
+  beforeEach(() => {wrapper = shallowMount(InformesLista)});
 
-    //Testa se tem 6 posts em data
+  test('Testa se lista de posts está completa', () => {
     wrapper.vm.$nextTick(() => {
       expect(wrapper.vm.posts.length).toBe(6);
     });  
-
-
-    //Testa se o primeiro é o 1
-    wrapper.vm.$nextTick(() => {
-      informe_el = wrapper.findComponent(Informe);
-      expect(informe_el.exists()).toBe(True);
-      expect(informe_el.props('post_info')).toBe('corpo1');
-    }); 
   });
 
-  it('Testa paginação', () => {
-    var wrapper = shallowMount(InformesLista);
-
-    //Testa se tem 5 na página atual
+  test('Testa se posts aparecem na página na ordem certa', () => {
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.findAllComponents(Informe)).toHaveLength(5);
+      informes = wrapper.findComponent(Informe);
+      expect(informes).toHaveLength(5);
+      expect(informes.at(0).props('post_info')).toBe('corpo1');
+      expect(informes.at(1).props('post_info')).toBe('corpo2');
+      expect(informes.at(4).props('post_info')).toBe('corpo5');
     });  
+  });
 
-    //Testa se os posts estão mudando corretamente ao mudar de página
+
+  test('Testa paginação', () => {
     wrapper.setData({ pagina_atual: 2 })
     wrapper.vm.$nextTick(() => {
       informes = wrapper.findAllComponents(Informe);
       expect(informes).toHaveLength(1); //Testa se agora só tem 1 na página atual
-      expect(informes.at(0).props('post_info')).toBe('corpo6'); //Testa se o primeiro é o 6
+      expect(informes.at(0).props('post_info')).toBe('corpo6'); //Testa se é o 6
     });
   });
 
-  it('Testa visibilidade do botão', () => {
-    var wrapper = shallowMount(InformesLista);
-  
+  test('Testa visibilidade do botão', () => {
     //Testa se botão de novo informe não existe
-    expect(wrapper.find('.novo-informe').exists()).toBeFalsy()
+    expect(wrapper.find('.novo-informe').exists()).toBeFalsy();
+
+    //Testa se botão existe para o admin
+    wrapper.vm.$root = { logado: true, admin:true };
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.find('.novo-informe').exists()).toBeTruthy();
+    });
   });
 })
