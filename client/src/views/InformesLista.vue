@@ -4,7 +4,7 @@
       <div class="row justify-content-center">
         <div class="col-9 p-4">
           <h1 class="titulo"> Informes </h1>
-          <b-button class='novo-informe' :to="'informes/novo'" size="sm" variant="dark" v-if="this.$root.logado && this.$root.admin">
+          <b-button class="novo-informe" :to="'informes/novo'" size="sm" variant="dark" v-if="this.$root.logado && this.$root.admin">
             <b-icon icon="plus"></b-icon> Novo informe
           </b-button>
           <div class="row-2 my-3" v-for="post in posts_atuais" :key="post.id">
