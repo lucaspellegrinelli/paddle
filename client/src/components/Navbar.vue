@@ -8,15 +8,15 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/sobre">Sobre</b-nav-item>
-          <b-nav-item to="/informes">Informes</b-nav-item>
-          <b-nav-item to="/atletas">Atletas</b-nav-item>
-          <b-nav-item to="/campeonatos">Campeonatos</b-nav-item>
-          <b-nav-item to="/ranking">Ranking</b-nav-item>
+          <b-nav-item class="sobre" to="/sobre">Sobre</b-nav-item>
+          <b-nav-item class="informes" to="/informes">Informes</b-nav-item>
+          <b-nav-item class="atletas" to="/atletas">Atletas</b-nav-item>
+          <b-nav-item class="campeonatos" to="/campeonatos">Campeonatos</b-nav-item>
+          <b-nav-item class="ranking" to="/ranking">Ranking</b-nav-item>
           <b-nav-item v-b-modal.modal-login  v-if="!this.$root.logado">Login</b-nav-item>
-          <b-nav-item to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>
-          <b-nav-item to="/campeonato" v-if="this.$root.logado && this.$root.admin">Criar Campeonato</b-nav-item>          
-          <b-nav-item to="/partidas" v-if="this.$root.logado && this.$root.admin">Editar Partida</b-nav-item>      
+          <b-nav-item class="cadastro" to="/cadastro" v-if="this.$root.logado && this.$root.admin">Cadastro</b-nav-item>
+          <b-nav-item class="campeonato" to="/campeonato" v-if="this.$root.logado && this.$root.admin">Criar Campeonato</b-nav-item>          
+          <b-nav-item class="partidas" to="/partidas" v-if="this.$root.logado && this.$root.admin">Editar Partida</b-nav-item>      
           <b-nav-item-dropdown right v-if="this.$root.logado">
             <template v-slot:button-content>
               <b-icon icon="person-fill"></b-icon>
