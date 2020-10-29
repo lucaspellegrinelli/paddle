@@ -36,15 +36,14 @@ def test_post_admin(client):
         ('/api/login'),
         data=data, content_type='application/json', charset='UTF-8'
     )
-    assert response.status_code == 200
-    #posta algo
+    #posta
     data = '{"titulo":"teste1", "corpo":"teste1_corpo"}'
     response = client.post(
         ('/api/informes'),
         data=data, content_type='application/json', charset='UTF-8'
     )
     assert response.status_code == 200
-    #verifica se o post está lá
+    #confirma se o post está mesmo lá
     response = client.get(
         ('/api/informes?limite=1')
     )
