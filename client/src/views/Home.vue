@@ -6,7 +6,7 @@
         <b-card-group deck>
           <Informe v-for="post in ultimos_posts" :key="post.id" :post_info="post" :esconder_texto="esconder_texto"/>
         </b-card-group>
-        <b-button :to="'informes'" size="sm" variant="outline-dark" style="margin-top: 20px">
+        <b-button class="informes" :to="'informes'" size="sm" variant="outline-dark" style="margin-top: 20px">
           Ver todos
         </b-button>
       </b-container>
@@ -37,7 +37,7 @@
           </div>
         </template>
     
-        <b-button :to="'ranking'" size="sm" variant="outline-dark" style="margin-top: 20px">
+        <b-button class="rankings" :to="'ranking'" size="sm" variant="outline-dark" style="margin-top: 20px">
           Ver todos
         </b-button>
       </b-container>
